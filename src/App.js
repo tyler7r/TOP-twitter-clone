@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
 import { db } from './firebase';
+import Logo from './images/iconmonstr-twitter-1.svg'
 import { Home } from './components/Home';
 
 function App() {
@@ -12,7 +13,7 @@ function App() {
     setSignedIn(true);
   }
 
-  const signOutUser = () => {
+  const logOutUser = () => {
     signOut(getAuth());
     setSignedIn(false);
   }
@@ -22,12 +23,15 @@ function App() {
   }
 
   const getProfilePic = () => {
-    return getAuth().currentUser.photoURL
+    if (signedIn === false) return <img src={Logo} alt='profile-pic'/>
+    else {
+      return <img src={getAuth().currentUser.photoURL} alt='profile-pic' />
+    }
   }
 
   return (
     <div className="App">
-      <Home signIn={signIn} isUserSignedIn={signedIn} signOut={signOutUser} profilePic={getProfilePic} username={getUserName} />
+      <Home signIn={signIn} isUserSignedIn={signedIn} logOut={logOutUser} profilePic={getProfilePic} username={getUserName} />
     </div>
   );
 }

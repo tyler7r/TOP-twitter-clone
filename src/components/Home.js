@@ -1,7 +1,10 @@
 import React from 'react';
+import { Header } from './Header';
 
 export const Home = (props) => {
     return (
-        <div id='sign-in-button' onClick={() => props.signIn()}>Sign In</div>
+        <div id='home-page'>
+            <Header signIn={props.signIn} logOut={props.logOut} isUserSignedIn={props.isUserSignedIn} profilePic={props.profilePic} username={props.username} />
+        </div>
     )
 }
