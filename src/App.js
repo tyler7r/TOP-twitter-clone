@@ -23,10 +23,8 @@ function App() {
   }
 
   const getProfilePic = () => {
-    if (signedIn === false) return <img src={Logo} alt='profile-pic'/>
-    else {
-      return <img src={getAuth().currentUser.photoURL} alt='profile-pic' />
-    }
+    if (signedIn === true) return getAuth().currentUser.photoURL;
+    else return Logo;
   }
 
   return (
