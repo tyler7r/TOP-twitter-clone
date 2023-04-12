@@ -1,7 +1,6 @@
 import React from 'react';
 
 export const Nav = (props) => {
-    console.log(props);
     if (props.isUserSignedIn === true) {
         return (
             <div id='main-nav'>
