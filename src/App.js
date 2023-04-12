@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, onSnapshot, query } from 'firebase/firestore';
 import { db } from './firebase';
 import Logo from './images/iconmonstr-twitter-1.svg'
 import { Home } from './components/Home';
@@ -8,10 +8,10 @@ import { Home } from './components/Home';
 function App() {
   const [signedIn, setSignedIn] = useState(false)
   const [tweets, setTweets] = useState([]);
+  const [interaction, setInteraction] = useState(false);
 
   useEffect(() => {
-    console.log(tweets);
-    let copy = [...tweets];
+    console.log('run');
     let empty = [];
     const getTweets = async () => {
       const querySnapshot = await getDocs(collection(db, 'tweets'))
@@ -19,11 +19,12 @@ function App() {
         empty.push(doc.data());
         empty[empty.length - 1].id = doc.id;
       })
-      if (empty.length === copy.length) return;
+      if (empty.length === tweets.length && interaction === false) return;
       else setTweets(empty);
+      setInteraction(false);
     }
     getTweets();
-  }, [tweets]);
+  }, [tweets, interaction]);
 
   const signIn = async () => {
     const provider = new GoogleAuthProvider();
@@ -47,7 +48,7 @@ function App() {
 
   return (
     <div className="App">
-      <Home signIn={signIn} isUserSignedIn={signedIn} logOut={logOutUser} profilePic={getProfilePic} username={getUserName} tweets={tweets} setTweets={setTweets} />
+      <Home signIn={signIn} isUserSignedIn={signedIn} logOut={logOutUser} profilePic={getProfilePic} username={getUserName} tweets={tweets} setTweets={setTweets} interaction={interaction} setInteraction={setInteraction} />
     </div>
   );
 }
