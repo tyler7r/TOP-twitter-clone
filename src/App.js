@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
-import { collection, getDocs, onSnapshot, query } from 'firebase/firestore';
+import { collection, getDocs, addDoc } from 'firebase/firestore';
 import { db } from './firebase';
 import Logo from './images/iconmonstr-twitter-1.svg'
 import { Home } from './components/Home';
@@ -54,7 +54,3 @@ function App() {
 }
 
 export default App;
-
-// const isUserSignedIn = () => {
-//     return !!getAuth().currentUser;
-//   }

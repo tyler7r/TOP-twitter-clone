@@ -26,6 +26,7 @@ export const WriteTweet = (props) => {
                 profilePic: props.profilePic(),
                 likes: 0,
                 retweets: 0,
+                comments: 0,
             })
             props.setTweets(copy);
         } catch (error) {
