@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { db } from '../firebase';
+import { db } from '../../firebase';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
@@ -37,7 +37,7 @@ export const WriteTweet = (props) => {
     }
 
     if (props.draftMode === false) {
-        return <div id='tweet-button' onClick={() => props.setDraftMode(true)}>+</div>
+        return <div id='tweet-button' onClick={() => props.setDraftMode(true)}>Tweet</div>
     } else {
         return (
             <TweetDraft draftMode={props.draftMode} setDraftMode={props.setDraftMode} tweet={tweet} setTweet={setTweet} submitTweet={submitTweet} />

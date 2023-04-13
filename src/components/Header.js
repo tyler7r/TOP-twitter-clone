@@ -1,6 +1,7 @@
 import React from 'react';
 import { Nav } from './Nav';
 import Logo from '../images/iconmonstr-twitter-1.svg'
+import '../styles/header.css'
 
 export const Header = (props) => {
     return (

@@ -1,0 +1,51 @@
+.tweet {
+    display: grid;
+    text-align: center;
+    border: 2px solid lightgray;
+    padding: 4px;
+    width: 80%;
+    grid-template-columns: 1fr 8fr;
+}
+
+.tweet-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-left: 8px;
+}
+
+.tweet-profilePic {
+    height: 50px;
+    border-radius: 50%;
+}
+
+.tweet-name {
+    text-align: start;
+    justify-self: start;
+    font-weight: bold;
+    width: 100%;
+}
+
+.tweet-message {
+    align-self: start;
+    font-weight: 500;
+    width: 100%;
+    text-align: start;
+    margin-bottom: 8px;
+}
+
+.interaction-btns-container {
+    display: flex;
+    gap: 4px;
+    justify-content: space-around;
+}
+
+.interaction-btns {
+    display: flex;
+    gap: 2px;
+}
+
+.tweet-interaction-btn {
+    height: 20px;
+    cursor: pointer;
+}

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
-import { db } from '../firebase';
+import React, { useState, useEffect } from 'react';
+import { getAuth } from 'firebase/auth';
+import { addDoc, collection, serverTimestamp, getDocs } from 'firebase/firestore';
+import { db } from '../../firebase';
 
 const CommentDraft = (props) => {
     return (
@@ -12,7 +13,23 @@ const CommentDraft = (props) => {
 }
 
 export const Comment = (props) => {
+    const { comments, setComments, newComment, setNewComment, tweetId } = props
     const [comment, setComment] = useState('');
+
+    useEffect(() => {
+        let copy = [];
+        const getComments = async (e) => {
+            const querySnapshot = await getDocs(collection(db, 'tweets', tweetId, 'comments'));
+            querySnapshot.forEach((doc) => {
+                copy.push(doc.data())
+            })
+            if (copy.length === comments.length && newComment === false) return
+            else setComments(copy);
+            setNewComment(false);
+        }
+        getComments();
+        console.log(comments);
+    }, [comments, newComment]);
 
     const submitComment = async (e, message) => {
         let copy = [...props.tweets];
@@ -31,13 +48,14 @@ export const Comment = (props) => {
             console.error("Error with message: ", error);
         }
         setComment('');
+        props.setNewComment(true);
         props.comment(props.tweetId);
         props.setCommentMode(false);
         
     }
     if (props.commentMode === true) {
         return (
-            <CommentDraft commentNum={props.comment} commentMode={props.draftMode} setCommentMode={props.setDraftMode} comment={comment} setComment={setComment} submitComment={submitComment} />
+            <CommentDraft commentNum={props.comment} commentMode={props.draftMode} setCommentMode={props.setDraftMode} comment={comment} setComment={setComment} submitComment={submitComment} comments={comments} />
         )
     }
 }
