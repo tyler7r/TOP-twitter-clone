@@ -49,3 +49,12 @@
     height: 20px;
     cursor: pointer;
 }
+.comment {
+    display: flex;
+    flex-direction: column;
+}
+
+.comment-interaction-btn {
+    height: 15px;
+    cursor: pointer;
+}

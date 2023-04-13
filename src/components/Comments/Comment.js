@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getAuth } from 'firebase/auth';
-import { addDoc, collection, serverTimestamp, getDocs } from 'firebase/firestore';
+import { addDoc, collection, serverTimestamp, getDoc, doc } from 'firebase/firestore';
 import { db } from '../../firebase';
 
 const CommentDraft = (props) => {
@@ -24,8 +24,7 @@ export const Comment = (props) => {
                 message: message,
                 time: serverTimestamp(),
                 profilePic: props.profilePic(),
-                likes: 0,
-                retweets: 0,
+                likes: [],
             })
             props.setTweets(copy);
         } catch (error) {
@@ -35,7 +34,7 @@ export const Comment = (props) => {
         props.setNewComment(true);
         props.comment(props.tweetId);
         props.setCommentMode({open: false, id: ''});
-        
+        props.setInteraction(true);
     }
     if (props.commentMode.open === true && props.commentMode.id === props.tweetId) {
         return (

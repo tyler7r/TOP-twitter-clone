@@ -24,8 +24,8 @@ export const WriteTweet = (props) => {
                 message: message,
                 time: serverTimestamp(),
                 profilePic: props.profilePic(),
-                likes: 0,
-                retweets: 0,
+                likes: [],
+                retweets: [],
                 comments: 0,
             })
             props.setTweets(copy);
