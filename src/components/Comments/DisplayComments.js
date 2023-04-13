@@ -5,15 +5,6 @@ import Heart from '../../images/heart.svg'
 import '../../styles/tweet.css'
 
 export const DisplayComments = (props) => {
-    const retrieveComments = async () => {
-        let copy = [];
-        const querySnapshot = await getDocs(collection(db, 'tweets', props.tweetId, 'comments'));
-        querySnapshot.forEach((doc) => {
-            copy.push(doc.data())
-            copy[copy.length - 1].id = doc.id;
-        })
-        props.setComments(copy);
-    }
 
     const like = async (e) => {
         const docRef = doc(db, 'tweets', props.tweetId, 'comments', e.target.id);
@@ -28,7 +19,7 @@ export const DisplayComments = (props) => {
                 likes: arrayUnion(props.uid()),
             })
         }
-        retrieveComments();
+        props.retrieveComments(props.tweetId);
     }
 
     if (props.openTweet.open === true && props.openTweet.id === props.tweetId) {

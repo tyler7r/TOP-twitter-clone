@@ -72,15 +72,25 @@ export const DisplayTweets = (props) => {
         }
     }
 
+    const retrieveComments = async (id) => {
+        let copy = [];
+        const querySnapshot = await getDocs(collection(db, 'tweets', id, 'comments'));
+        querySnapshot.forEach((doc) => {
+            copy.push(doc.data())
+            copy[copy.length - 1].id = doc.id;
+        })
+        setComments(copy);
+    }
+
     return (
         <div id='feed'>
             {props.tweets.map(tweet => {
                 return (
-                    <div key={tweet.id} className='tweet' onClick={() => getComments(tweet.id)}>
+                    <div key={tweet.id} className='tweet'>
                         <img className='tweet-profilePic' src={tweet.profilePic} alt='tweet-profilePic' />
                         <div id={tweet.id} className="tweet-details">
-                            <div id={tweet.id} className='tweet-name'>{tweet.name}</div>
-                            <div id={tweet.id} className='tweet-message'>{tweet.message}</div>
+                            <div id={tweet.id} className='tweet-name' onClick={() => getComments(tweet.id)}>{tweet.name}</div>
+                            <div id={tweet.id} className='tweet-message' onClick={() => getComments(tweet.id)}>{tweet.message}</div>
                             <div id={tweet.id} className="interaction-btns-container">
                                 <div className="interaction-btns">
                                     <img className='tweet-interaction-btn' src={Heart} alt='like-btn' onClick={(e) => {if(props.checkSignIn()) like(e)}} id={tweet.id}/>
@@ -96,8 +106,8 @@ export const DisplayTweets = (props) => {
                                 </div>
                             </div>
                         </div>
-                        <Comment comments={comments} setComments={setComments} newComment={newComment} setNewComment={setNewComment} openTweet={openTweet} setOpenTweet={setOpenTweet} comment={comment} username={props.username} profilePic={props.profilePic} commentMode={commentMode} setCommentMode={setCommentMode} tweetId={tweet.id} tweets={props.tweets} setTweets={props.setTweets} setInteraction={props.setInteraction} />
-                        <DisplayComments checkSignIn={props.checkSignIn} comments={comments} setComments={setComments} newComment={newComment} setNewComment={setNewComment} openTweet={openTweet} tweetId={tweet.id} uid={props.uid} setInteraction={props.setInteraction} getComments={getComments} />
+                        <Comment retrieveComments={retrieveComments} comments={comments} setComments={setComments} newComment={newComment} setNewComment={setNewComment} openTweet={openTweet} setOpenTweet={setOpenTweet} comment={comment} username={props.username} profilePic={props.profilePic} commentMode={commentMode} setCommentMode={setCommentMode} tweetId={tweet.id} tweets={props.tweets} setTweets={props.setTweets} setInteraction={props.setInteraction} />
+                        <DisplayComments retrieveComments={retrieveComments} checkSignIn={props.checkSignIn} comments={comments} setComments={setComments} newComment={newComment} setNewComment={setNewComment} openTweet={openTweet} tweetId={tweet.id} uid={props.uid} setInteraction={props.setInteraction} getComments={getComments} />
                     </div>
                 )
             })}
