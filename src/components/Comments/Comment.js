@@ -13,23 +13,7 @@ const CommentDraft = (props) => {
 }
 
 export const Comment = (props) => {
-    const { comments, setComments, newComment, setNewComment, tweetId } = props
     const [comment, setComment] = useState('');
-
-    useEffect(() => {
-        let copy = [];
-        const getComments = async (e) => {
-            const querySnapshot = await getDocs(collection(db, 'tweets', tweetId, 'comments'));
-            querySnapshot.forEach((doc) => {
-                copy.push(doc.data())
-            })
-            if (copy.length === comments.length && newComment === false) return
-            else setComments(copy);
-            setNewComment(false);
-        }
-        getComments();
-        console.log(comments);
-    }, [comments, newComment]);
 
     const submitComment = async (e, message) => {
         let copy = [...props.tweets];
@@ -50,12 +34,12 @@ export const Comment = (props) => {
         setComment('');
         props.setNewComment(true);
         props.comment(props.tweetId);
-        props.setCommentMode(false);
+        props.setCommentMode({open: false, id: ''});
         
     }
-    if (props.commentMode === true) {
+    if (props.commentMode.open === true && props.commentMode.id === props.tweetId) {
         return (
-            <CommentDraft commentNum={props.comment} commentMode={props.draftMode} setCommentMode={props.setDraftMode} comment={comment} setComment={setComment} submitComment={submitComment} comments={comments} />
+            <CommentDraft commentNum={props.comment} commentMode={props.draftMode} setCommentMode={props.setDraftMode} comment={comment} setComment={setComment} submitComment={submitComment} comments={props.comments} />
         )
     }
 }
