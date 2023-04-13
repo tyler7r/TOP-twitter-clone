@@ -47,8 +47,8 @@ export const DisplayTweets = (props) => {
                         <div className="tweet-details">
                             <div className='tweet-name' onClick={() => setOpenTweet(!openTweet)}>{tweet.name}</div>
                             <div className='tweet-message' onClick={() => setOpenTweet(!openTweet)}>{tweet.message}</div>
-                            <div class="interaction-btns-container">
-                                <div className="interaction-btns">
+                            <div className="interaction-btns-container">
+                                <div className="interaction-btns" onClick={() => props.checkSignIn()}>
                                     <img className='tweet-interaction-btn' src={Heart} alt='like-btn' onClick={(e) => like(e)} id={tweet.id}/>
                                     <div className='likes'>{tweet.likes}</div>
                                 </div>
@@ -56,7 +56,7 @@ export const DisplayTweets = (props) => {
                                     <img src={Retweet} alt='retweet-btn' onClick={(e) => retweet(e)} id={tweet.id} className='tweet-interaction-btn' />
                                     <div className='retweets'>{tweet.retweets}</div>
                                 </div>
-                                <div class="interaction-btns">
+                                <div className="interaction-btns">
                                     <img src={CommentIcon} alt='comment-btn' onClick={() => setCommentMode(true)} id={tweet.id} className='tweet-interaction-btn' />
                                     <div className='comments'>{tweet.comments}</div>
                                 </div>

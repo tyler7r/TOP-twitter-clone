@@ -37,7 +37,7 @@ export const WriteTweet = (props) => {
     }
 
     if (props.draftMode === false) {
-        return <div id='tweet-button' onClick={() => props.setDraftMode(true)}>Tweet</div>
+        return <div id='tweet-button' onClick={() => {if (props.checkSignIn() === true){props.setDraftMode(true)}}}>Tweet</div>
     } else {
         return (
             <TweetDraft draftMode={props.draftMode} setDraftMode={props.setDraftMode} tweet={tweet} setTweet={setTweet} submitTweet={submitTweet} />

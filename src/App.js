@@ -46,9 +46,16 @@ function App() {
     else return Logo;
   }
 
+  const checkSignIn = () => {
+    if (signedIn === true) return true
+    else {
+      signIn();
+    }
+  }
+
   return (
     <div className="App">
-      <Home signIn={signIn} isUserSignedIn={signedIn} logOut={logOutUser} profilePic={getProfilePic} username={getUserName} tweets={tweets} setTweets={setTweets} interaction={interaction} setInteraction={setInteraction} />
+      <Home checkSignIn={checkSignIn} signIn={signIn} isUserSignedIn={signedIn} logOut={logOutUser} profilePic={getProfilePic} username={getUserName} tweets={tweets} setTweets={setTweets} interaction={interaction} setInteraction={setInteraction} />
     </div>
   );
 }
