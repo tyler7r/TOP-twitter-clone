@@ -35,7 +35,7 @@ export const DisplayComments = (props) => {
         return (
             <div className='comment-section'>
                 {props.comments.map(comment => {
-                    if (comment.author === props.uid()) {
+                    if (comment.author === props.currentUser) {
                         return (
                             <div key={Math.random()} className='comment'>
                                 <div className='comment-message'>{comment.message}</div>

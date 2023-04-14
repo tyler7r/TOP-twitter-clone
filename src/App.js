@@ -11,7 +11,8 @@ function App() {
   const [signedIn, setSignedIn] = useState(false);
   const [tweets, setTweets] = useState([]);
   const [interaction, setInteraction] = useState(false);
-  const [currentProfile, setCurrentProfile] = useState([])
+  const [userFeed, setUserFeed] = useState([]);
+  const [currentUser, setCurrentUser] = useState('');
 
   useEffect(() => {
     console.log('run');
@@ -39,6 +40,7 @@ function App() {
   const logOutUser = () => {
     signOut(getAuth());
     setSignedIn(false);
+    setCurrentUser('');
   }
 
   const getUserName = () => {
@@ -75,10 +77,12 @@ function App() {
         tweets: [],
       })
     }
+    setCurrentUser(getUID());
   }
 
   const getUserInteractions = async () => {
     const user = doc(db, 'users', getUID())
+    const getUser = getDoc(user);
     const tweets = await getDocs(collection(db, 'tweets'))
     updateDoc(user, {
       tweets: [],
@@ -110,8 +114,8 @@ function App() {
     <HashRouter>
       <div className="App">
         <Routes>
-          <Route path='/' element={<Home getUserInteractions={getUserInteractions} checkSignIn={checkSignIn} signIn={signIn} isUserSignedIn={signedIn} logOut={logOutUser} profilePic={getProfilePic} username={getUserName} uid={getUID} tweets={tweets} setTweets={setTweets} interaction={interaction} setInteraction={setInteraction} />} />
-          <Route path='/profile' element={<Profile />} />
+          <Route path='/' element={<Home currentUser={currentUser} getUserInteractions={getUserInteractions} checkSignIn={checkSignIn} signIn={signIn} isUserSignedIn={signedIn} logOut={logOutUser} profilePic={getProfilePic} username={getUserName} uid={getUID} tweets={tweets} setTweets={setTweets} interaction={interaction} setInteraction={setInteraction} />} />
+          <Route path='/profile' element={<Profile currentUser={currentUser} getUserInteractions={getUserInteractions} checkSignIn={checkSignIn} signIn={signIn} isUserSignedIn={signedIn} logOut={logOutUser} profilePic={getProfilePic} username={getUserName} uid={getUID} tweets={userFeed} setTweets={setUserFeed} interaction={interaction} setInteraction={setInteraction}/>} />
         </Routes>
       </div>
     </HashRouter>
