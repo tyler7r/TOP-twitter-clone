@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { collection, getDocs, getDoc, doc, updateDoc, increment, arrayUnion, FieldValue, DocumentSnapshot, get, arrayRemove, getCountFromServer } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { Comment } from '../Comments/Comment';
@@ -15,18 +16,20 @@ export const DisplayTweets = (props) => {
     const [comments, setComments] = useState([]);
 
     const like = async (e) => {
-        const docRef = doc(db, 'tweets', e.target.id);
-        const snapshot = await getDoc(docRef);
+        const tweet = doc(db, 'tweets', e.target.id);
+
+        const snapshot = await getDoc(tweet);
         const likes = snapshot.data().likes
         if (likes.includes(props.uid())) {
-            await updateDoc(docRef, {
+            await updateDoc(tweet, {
                 likes: arrayRemove(props.uid())
             })
         } else {
-            await updateDoc(docRef, {
+            await updateDoc(tweet, {
                 likes: arrayUnion(props.uid()),
             })
         }
+        props.getUserInteractions();
         props.setInteraction(true);
     }
 
@@ -43,6 +46,7 @@ export const DisplayTweets = (props) => {
                 retweets: arrayUnion(props.uid()),
             })
         }
+        props.getUserInteractions();
         props.setInteraction(true);
     }
 
@@ -87,7 +91,7 @@ export const DisplayTweets = (props) => {
             {props.tweets.map(tweet => {
                 return (
                     <div key={tweet.id} className='tweet'>
-                        <img className='tweet-profilePic' src={tweet.profilePic} alt='tweet-profilePic' />
+                        <Link to='/profile'><img onClick={() => props.getUserInteractions()} className='tweet-profilePic' src={tweet.profilePic} alt='tweet-profilePic' /></Link>
                         <div id={tweet.id} className="tweet-details">
                             <div id={tweet.id} className='tweet-name' onClick={() => getComments(tweet.id)}>{tweet.name}</div>
                             <div id={tweet.id} className='tweet-message' onClick={() => getComments(tweet.id)}>{tweet.message}</div>
