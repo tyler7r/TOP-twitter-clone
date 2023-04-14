@@ -33,6 +33,7 @@ export const WriteTweet = (props) => {
         } catch (error) {
             console.error("Error with message: ", error);
         }
+        props.getUserInteractions();
         props.setDraftMode(false);
         setTweet('');
     }

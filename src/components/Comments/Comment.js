@@ -11,6 +11,7 @@ export const Comment = (props) => {
         e.preventDefault();
         try {
             await addDoc(collection(db, 'tweets', props.tweetId, 'comments'), {
+                author: props.uid(),
                 name: props.username(),
                 message: message,
                 time: serverTimestamp(),
