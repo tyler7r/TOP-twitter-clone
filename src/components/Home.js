@@ -12,9 +12,9 @@ export const Home = (props) => {
     
     return (
         <div id='home-page'>
-            <Header signIn={props.signIn} logOut={props.logOut} isUserSignedIn={props.isUserSignedIn} profilePic={props.profilePic} username={props.username} />
+            <Header setCurrentProfile={props.setCurrentProfile} setInteraction={props.setInteraction} signIn={props.signIn} logOut={props.logOut} isUserSignedIn={props.isUserSignedIn} profilePic={props.profilePic} username={props.username} />
             <WriteTweet currentProfile={props.currentProfile} setCurrentProfile={props.setCurrentProfile} getUserInteractions={props.getUserInteractions} uid={props.uid} checkSignIn={props.checkSignIn} tweets={props.tweets} setTweets={props.setTweets} draftMode={draftMode} setDraftMode={setDraftMode} profilePic={props.profilePic} username={props.username}  setInteraction={props.setInteraction}/>
-            <DisplayTweets currentProfile={props.currentProfile} setCurrentProfile={props.setCurrentProfile} currentUser={props.currentUser} getUserInteractions={props.getUserInteractions} uid={props.uid} checkSignIn={props.checkSignIn} username={props.username} profilePic={props.profilePic} tweets={props.tweets} setTweets={props.setTweets} interaction={props.interaction} setInteraction={props.setInteraction} />
+            <DisplayTweets setProfileView={props.setProfileView} currentProfile={props.currentProfile} setCurrentProfile={props.setCurrentProfile} currentUser={props.currentUser} getUserInteractions={props.getUserInteractions} uid={props.uid} checkSignIn={props.checkSignIn} username={props.username} profilePic={props.profilePic} tweets={props.tweets} setTweets={props.setTweets} interaction={props.interaction} setInteraction={props.setInteraction} />
         </div>
     )
 }

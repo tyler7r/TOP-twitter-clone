@@ -11,9 +11,9 @@ function App() {
   const [signedIn, setSignedIn] = useState(false);
   const [tweets, setTweets] = useState([]);
   const [interaction, setInteraction] = useState(false);
-  // const [userFeed, setUserFeed] = useState([]);
   const [currentUser, setCurrentUser] = useState('');
   const [currentProfile, setCurrentProfile] = useState('');
+  const [profileView, setProfileView] = useState('tweets');
 
   const getTweets = async () => {
     let empty = [];
@@ -105,17 +105,25 @@ function App() {
         updateDoc(user, {
           likes: arrayUnion(tweet.data())
         })
+        if (profileView === 'likes') {
+          empty.push(tweet.data());
+        }
       }
       if (tweet.data().retweets.includes(author)) {
         updateDoc(user, {
           retweets: arrayUnion(tweet.data())
         })
+        if (profileView === 'retweets') {
+          empty.push(tweet.data())
+        }
       }
       if (tweet.data().author === author) {
         updateDoc(user, {
           tweets: arrayUnion(tweet.data())
         })
-        empty.push(tweet.data())
+        if (profileView === 'tweets') {
+          empty.push(tweet.data())
+        }
       }
     })
     setTweets(empty);
@@ -128,8 +136,8 @@ function App() {
     <HashRouter>
       <div className="App">
         <Routes>
-          <Route path='/' element={<Home currentProfile={currentProfile} setCurrentProfile={setCurrentProfile} currentUser={currentUser} getUserInteractions={getUserInteractions} checkSignIn={checkSignIn} signIn={signIn} isUserSignedIn={signedIn} logOut={logOutUser} profilePic={getProfilePic} username={getUserName} uid={getUID} tweets={tweets} setTweets={setTweets} interaction={interaction} setInteraction={setInteraction} />} />
-          <Route path='/profile' element={<Profile currentProfile={currentProfile} setCurrentProfile={setCurrentProfile} currentUser={currentUser} getUserInteractions={getUserInteractions} checkSignIn={checkSignIn} signIn={signIn} isUserSignedIn={signedIn} logOut={logOutUser} profilePic={getProfilePic} username={getUserName} uid={getUID} tweets={tweets} setTweets={setTweets} interaction={interaction} setInteraction={setInteraction}/>} />
+          <Route path='/' element={<Home setProfileView={setProfileView} currentProfile={currentProfile} setCurrentProfile={setCurrentProfile} currentUser={currentUser} getUserInteractions={getUserInteractions} checkSignIn={checkSignIn} signIn={signIn} isUserSignedIn={signedIn} logOut={logOutUser} profilePic={getProfilePic} username={getUserName} uid={getUID} tweets={tweets} setTweets={setTweets} interaction={interaction} setInteraction={setInteraction} />} />
+          <Route path='/profile' element={<Profile profileView={profileView} setProfileView={setProfileView} currentProfile={currentProfile} setCurrentProfile={setCurrentProfile} currentUser={currentUser} getUserInteractions={getUserInteractions} checkSignIn={checkSignIn} signIn={signIn} isUserSignedIn={signedIn} logOut={logOutUser} profilePic={getProfilePic} username={getUserName} uid={getUID} tweets={tweets} setTweets={setTweets} interaction={interaction} setInteraction={setInteraction}/>} />
         </Routes>
       </div>
     </HashRouter>
