@@ -17,9 +17,9 @@ export const DisplayTweets = (props) => {
 
     const like = async (e) => {
         const tweet = doc(db, 'tweets', e.target.id);
-
         const snapshot = await getDoc(tweet);
         const likes = snapshot.data().likes
+
         if (likes.includes(props.uid())) {
             await updateDoc(tweet, {
                 likes: arrayRemove(props.uid())
@@ -29,7 +29,6 @@ export const DisplayTweets = (props) => {
                 likes: arrayUnion(props.uid()),
             })
         }
-        props.getUserInteractions();
         props.setInteraction(true);
     }
 
@@ -37,6 +36,7 @@ export const DisplayTweets = (props) => {
         const docRef = doc(db, 'tweets', e.target.id);
         const snapshot = await getDoc(docRef);
         const retweets = snapshot.data().retweets;
+
         if (retweets.includes(props.uid())) {
             await updateDoc(docRef, {
                 retweets: arrayRemove(props.uid())
@@ -46,18 +46,20 @@ export const DisplayTweets = (props) => {
                 retweets: arrayUnion(props.uid()),
             })
         }
-        props.getUserInteractions();
         props.setInteraction(true);
+        // props.getUserInteractions(snapshot.data().author);
     }
 
     const comment = async (id) => {
         const docRef = doc(db, 'tweets', id);
+        const getRef = await getDoc(docRef);
         const colRef = collection(db, 'tweets', id, 'comments');
         const snapshot = (await getCountFromServer(colRef)).data().count;
         await updateDoc(docRef, {
             comments: snapshot,
         })
         props.setInteraction(true);
+        // props.getUserInteractions(getRef.data().author);
     }
 
     const getComments = async (id) => {
@@ -66,7 +68,6 @@ export const DisplayTweets = (props) => {
             const querySnapshot = await getDocs(collection(db, 'tweets', id, 'comments'));
             querySnapshot.forEach((doc) => {
                 copy.push(doc.data())
-                copy[copy.length - 1].id = doc.id;
             })
             setOpenTweet({open: true, id: `${id}`})
             if (copy.length === comments.length) return
@@ -81,7 +82,6 @@ export const DisplayTweets = (props) => {
         const querySnapshot = await getDocs(collection(db, 'tweets', id, 'comments'));
         querySnapshot.forEach((doc) => {
             copy.push(doc.data())
-            copy[copy.length - 1].id = doc.id;
         })
         setComments(copy);
     }
@@ -95,12 +95,13 @@ export const DisplayTweets = (props) => {
     }
 
     return (
+        // console.log(props.tweets)
         <div id='feed'>
             {props.tweets.map(tweet => {
                 if (tweet.author === props.currentUser) {
                     return (
                         <div key={tweet.id} className='tweet'>
-                            <Link to='/profile'><img onClick={() => props.getUserInteractions()} className='tweet-profilePic' src={tweet.profilePic} alt='tweet-profilePic' /></Link>
+                            <Link to='/profile'><img onClick={() => {props.setCurrentProfile(tweet.author); props.setInteraction(true)}} className='tweet-profilePic' src={tweet.profilePic} alt='tweet-profilePic' /></Link>
                             <div id={tweet.id} className="tweet-details">
                                 <div id={tweet.id} className='tweet-name' onClick={() => getComments(tweet.id)}>{tweet.name}</div>
                                 <div id={tweet.id} className='tweet-message' onClick={() => getComments(tweet.id)}>{tweet.message}</div>
@@ -127,7 +128,7 @@ export const DisplayTweets = (props) => {
                 } else {
                 return (
                     <div key={tweet.id} className='tweet'>
-                        <Link to='/profile'><img onClick={() => props.getUserInteractions()} className='tweet-profilePic' src={tweet.profilePic} alt='tweet-profilePic' /></Link>
+                        <Link to='/profile'><img onClick={() => {props.setCurrentProfile(tweet.author)}} className='tweet-profilePic' src={tweet.profilePic} alt='tweet-profilePic' /></Link>
                         <div id={tweet.id} className="tweet-details">
                             <div id={tweet.id} className='tweet-name' onClick={() => getComments(tweet.id)}>{tweet.name}</div>
                             <div id={tweet.id} className='tweet-message' onClick={() => getComments(tweet.id)}>{tweet.message}</div>

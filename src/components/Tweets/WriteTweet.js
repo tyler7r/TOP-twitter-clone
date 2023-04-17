@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { db } from '../../firebase';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { addDoc, collection, serverTimestamp, updateDoc, doc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
 const TweetDraft = (props) => {
@@ -19,7 +19,7 @@ export const WriteTweet = (props) => {
         let copy = [...props.tweets];
         e.preventDefault();
         try {
-            await addDoc(collection(db, 'tweets'), {
+            const newTweet = await addDoc(collection(db, 'tweets'), {
                 author: props.uid(),
                 name: props.username(),
                 message: message,
@@ -29,11 +29,15 @@ export const WriteTweet = (props) => {
                 retweets: [],
                 comments: 0,
             })
+            await updateDoc(doc(db, 'tweets', newTweet.id), {
+                id: newTweet.id,
+            })
             props.setTweets(copy);
         } catch (error) {
             console.error("Error with message: ", error);
         }
-        props.getUserInteractions();
+        // props.getUserInteractions(props.uid());
+        props.setInteraction(true);
         props.setDraftMode(false);
         setTweet('');
     }

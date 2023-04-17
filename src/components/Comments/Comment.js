@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getAuth } from 'firebase/auth';
-import { addDoc, collection, serverTimestamp, getDocs, doc } from 'firebase/firestore';
+import { addDoc, collection, serverTimestamp, updateDoc, doc } from 'firebase/firestore';
 import { db } from '../../firebase';
 
 export const Comment = (props) => {
@@ -10,13 +10,16 @@ export const Comment = (props) => {
         let copy = [...props.tweets];
         e.preventDefault();
         try {
-            await addDoc(collection(db, 'tweets', props.tweetId, 'comments'), {
+            const newComment = await addDoc(collection(db, 'tweets', props.tweetId, 'comments'), {
                 author: props.uid(),
                 name: props.username(),
                 message: message,
                 time: serverTimestamp(),
                 profilePic: props.profilePic(),
                 likes: [],
+            })
+            await updateDoc(doc(db, 'tweets', props.tweetId, 'comments', newComment.id), {
+                id: newComment.id
             })
             props.setTweets(copy);
         } catch (error) {
