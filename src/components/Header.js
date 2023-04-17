@@ -7,7 +7,7 @@ import '../styles/header.css'
 export const Header = (props) => {
     return (
         <div id='header'>
-            <Link to='/'><img onClick={() => {props.setCurrentProfile(''); props.setInteraction(true)}} id='header-logo' alt='main-logo' src={Logo}/></Link>
+            <Link to='/'><img onClick={() => {props.setCurrentProfile(''); props.setSearchMode(false); props.setSearch(''); props.setInteraction(true)}} id='header-logo' alt='main-logo' src={Logo}/></Link>
             <div id='main-title'>Tyler's Twitter</div>
             <Nav signIn={props.signIn} logOut={props.logOut} isUserSignedIn={props.isUserSignedIn} profilePic={props.profilePic} username={props.username} />
         </div>
