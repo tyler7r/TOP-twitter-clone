@@ -1,50 +1,51 @@
-import React, { useState, useEffect } from 'react';
-import { getAuth } from 'firebase/auth';
+import React, { useState } from 'react';
 import { addDoc, collection, serverTimestamp, updateDoc, doc } from 'firebase/firestore';
 import { db } from '../../firebase';
 
 export const Comment = (props) => {
-    const [comment, setComment] = useState('');
+    const { uid, username, tweetId, tweets, profilePic, setTweets, setNewComment, comment, commentMode, setCommentMode, setInteraction, retrieveComments} = props
+    const [commentMsg, setCommentMsg] = useState('');
 
     const submitComment = async (e, message) => {
-        let copy = [...props.tweets];
+        let copy = [...tweets];
         e.preventDefault();
         try {
-            const newComment = await addDoc(collection(db, 'tweets', props.tweetId, 'comments'), {
-                author: props.uid(),
-                name: props.username(),
+            const newComment = await addDoc(collection(db, 'tweets', tweetId, 'comments'), {
+                author: uid(),
+                name: username(),
                 message: message,
                 time: serverTimestamp(),
-                profilePic: props.profilePic(),
+                profilePic: profilePic(),
                 likes: [],
             })
-            await updateDoc(doc(db, 'tweets', props.tweetId, 'comments', newComment.id), {
+            await updateDoc(doc(db, 'tweets', tweetId, 'comments', newComment.id), {
                 id: newComment.id
             })
-            props.setTweets(copy);
+            setTweets(copy);
         } catch (error) {
             console.error("Error with message: ", error);
         }
-        setComment('');
-        props.setNewComment(true);
-        props.comment(props.tweetId);
-        props.setCommentMode({open: false, id: ''});
-        props.setInteraction(true);
-        props.retrieveComments(props.tweetId);
+        setCommentMsg('');
+        setNewComment(true);
+        comment(tweetId);
+        setCommentMode({open: false, id: ''});
+        setInteraction(true);
+        retrieveComments(tweetId);
     }
 
-    if (props.commentMode.open === true && props.commentMode.id === props.tweetId) {
+    if (commentMode.open === true && commentMode.id === tweetId) {
         return (
-            <CommentDraft commentNum={props.comment} commentMode={props.draftMode} setCommentMode={props.setDraftMode} comment={comment} setComment={setComment} submitComment={submitComment} comments={props.comments} />
+            <CommentDraft commentMsg={commentMsg} setCommentMsg={setCommentMsg} submitComment={submitComment} />
         )
     }
 }
 
 const CommentDraft = (props) => {
+    const { commentMsg, submitComment, setCommentMsg } = props
     return (
         <div id='tweet-draft'>
-            <input value={props.comment} type='text' name='comment-text' id='comment-text' placeholder="What's your response" onChange={(e) => {props.setComment(e.target.value)}} />
-            <button onClick={(e) => {props.submitComment(e, props.comment)}} type='submit' id='submit-comment'>Submit</button>
+            <input value={commentMsg} type='text' name='comment-text' id='comment-text' placeholder="What's your response" onChange={(e) => {setCommentMsg(e.target.value)}} />
+            <button onClick={(e) => {submitComment(e, commentMsg)}} type='submit' id='submit-comment'>Submit</button>
         </div>
     )
 }

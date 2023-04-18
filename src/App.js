@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { HashRouter, Link, Routes, Route } from 'react-router-dom'
-import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
-import { collection, getDocs, setDoc, query, where, doc, exists, getDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
+import { HashRouter, Routes, Route } from 'react-router-dom'
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
+import { collection, getDocs, setDoc, doc, getDoc, updateDoc, arrayUnion } from 'firebase/firestore';
 import { db } from './firebase';
 import Logo from './images/iconmonstr-twitter-1.svg'
 import { Home } from './components/Home';
@@ -30,7 +30,6 @@ function App() {
   }
 
   useEffect(() => {
-    console.log('also run');
     getTweets();
     checkInteractionStatus();
   }, [])
@@ -47,7 +46,6 @@ function App() {
         getTweets();
       }
     }
-    // checkInteractionStatus();
   }, [interaction, currentProfile, searchMode]);
 
   const signIn = async () => {
@@ -180,8 +178,8 @@ function App() {
     <HashRouter>
       <div className="App">
         <Routes>
-          <Route path='/' element={<Home setSearchMode={setSearchMode} search={search} setSearch={setSearch} setProfileView={setProfileView} currentProfile={currentProfile} setCurrentProfile={setCurrentProfile} currentUser={currentUser} getUserInteractions={getUserInteractions} checkSignIn={checkSignIn} signIn={signIn} isUserSignedIn={signedIn} logOut={logOutUser} profilePic={getProfilePic} username={getUserName} uid={getUID} tweets={tweets} setTweets={setTweets} interaction={interaction} setInteraction={setInteraction} />} />
-          <Route path='/profile' element={<Profile setSearchMode={setSearchMode} search={search} setSearch={setSearch} profileView={profileView} setProfileView={setProfileView} currentProfile={currentProfile} setCurrentProfile={setCurrentProfile} currentUser={currentUser} getUserInteractions={getUserInteractions} checkSignIn={checkSignIn} signIn={signIn} isUserSignedIn={signedIn} logOut={logOutUser} profilePic={getProfilePic} username={getUserName} uid={getUID} tweets={tweets} setTweets={setTweets} interaction={interaction} setInteraction={setInteraction}/>} />
+          <Route path='/' element={<Home setSearchMode={setSearchMode} search={search} setSearch={setSearch} setProfileView={setProfileView} currentProfile={currentProfile} setCurrentProfile={setCurrentProfile} currentUser={currentUser} checkSignIn={checkSignIn} signIn={signIn} isUserSignedIn={signedIn} logOut={logOutUser} profilePic={getProfilePic} username={getUserName} uid={getUID} tweets={tweets} setTweets={setTweets} setInteraction={setInteraction} />} />
+          <Route path='/profile' element={<Profile setSearchMode={setSearchMode} search={search} setSearch={setSearch} profileView={profileView} setProfileView={setProfileView} currentProfile={currentProfile} setCurrentProfile={setCurrentProfile} currentUser={currentUser} checkSignIn={checkSignIn} signIn={signIn} isUserSignedIn={signedIn} logOut={logOutUser} profilePic={getProfilePic} username={getUserName} uid={getUID} tweets={tweets} setTweets={setTweets} setInteraction={setInteraction}/>} />
         </Routes>
       </div>
     </HashRouter>

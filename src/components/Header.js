@@ -5,11 +5,13 @@ import Logo from '../images/iconmonstr-twitter-1.svg'
 import '../styles/header.css'
 
 export const Header = (props) => {
+    const { setCurrentProfile, setSearchMode, setSearch, setInteraction, signIn, logOut, isUserSignedIn, profilePic, username } = props;
+    
     return (
         <div id='header'>
-            <Link to='/'><img onClick={() => {props.setCurrentProfile(''); props.setSearchMode(false); props.setSearch(''); props.setInteraction(true)}} id='header-logo' alt='main-logo' src={Logo}/></Link>
+            <Link to='/'><img onClick={() => {setCurrentProfile(''); setSearchMode(false); setSearch(''); setInteraction(true)}} id='header-logo' alt='main-logo' src={Logo}/></Link>
             <div id='main-title'>Tyler's Twitter</div>
-            <Nav signIn={props.signIn} logOut={props.logOut} isUserSignedIn={props.isUserSignedIn} profilePic={props.profilePic} username={props.username} />
+            <Nav signIn={signIn} logOut={logOut} isUserSignedIn={isUserSignedIn} profilePic={profilePic} username={username} />
         </div>
     )
 }

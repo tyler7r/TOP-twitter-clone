@@ -1,15 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 
 export const Search = (props) => {
+    const { setInteraction, setSearchMode, search, setSearch } = props;
+
     const submitSearch = (e) => {
         e.preventDefault();
-        props.setInteraction(true);
-        props.setSearchMode(true);
+        setInteraction(true);
+        setSearchMode(true);
     }
 
     return (
         <div id='searchbar'>
-            <input type='text' value={props.search} name='search' id='search' placeholder='Search Twitter Clone' onChange={(e) => props.setSearch(e.target.value)}/>
+            <input type='text' value={search} name='search' id='search' placeholder='Search Twitter Clone' onChange={(e) => setSearch(e.target.value)}/>
             <button onClick={(e) => {submitSearch(e)}} type='submit'>Submit</button>
         </div>
     )
