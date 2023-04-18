@@ -42,7 +42,7 @@ export const WriteTweet = (props) => {
         setTweet('');
     }
 
-    if (props.draftMode === false && props.currentProfile === '') {
+    if (props.draftMode === false) {
         return <div id='tweet-button' onClick={() => {if (props.checkSignIn() === true){props.setDraftMode(true)}}}>Tweet</div>
     } else if (props.draftMode === true) {
         return (

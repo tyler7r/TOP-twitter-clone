@@ -40,7 +40,7 @@ function App() {
     if (interaction === false) return;
     else {
       if (currentProfile !== '') {
-        getUserInteractions(currentProfile);
+        getUserInteractions(currentProfile.author);
       } else if (searchMode === true) {
         getSearchResults(search)
       } else {
@@ -143,7 +143,6 @@ function App() {
 
   const checkInteractionStatus = async () => {
     if (tweets.length === 0) return
-    console.log(tweets);
     for (let i = 0; i < tweets.length; i++) {
       let getTweet = await getDoc(doc(db, 'tweets', tweets[i].id))
       const like = document.querySelector(`#${tweets[i].id}.like-btn`)
