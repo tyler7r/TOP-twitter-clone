@@ -19,7 +19,8 @@ export const DisplayTweets = (props) => {
 
     const like = async (e) => {
         if (checkSignIn()) {
-            const tweet = doc(db, 'tweets', e.target.id);
+            let btnId = e.target.id.slice(2)
+            const tweet = doc(db, 'tweets', btnId);
             const snapshot = await getDoc(tweet);
             const likes = snapshot.data().likes
 
@@ -38,7 +39,8 @@ export const DisplayTweets = (props) => {
 
     const retweet = async (e) => {
         if (checkSignIn()) {
-            const docRef = doc(db, 'tweets', e.target.id);
+            let btnId = e.target.id.slice(2)
+            const docRef = doc(db, 'tweets', btnId);
             const snapshot = await getDoc(docRef);
             const retweets = snapshot.data().retweets;
 
@@ -90,6 +92,7 @@ export const DisplayTweets = (props) => {
     }
 
     const checkCommentInteractionStatus = async (id) => {
+        if (comments.length === 0) return
         for (let i = 0; i < comments.length; i++) {
             let cmt = await getDoc(doc(db, 'tweets', id, 'comments', comments[i].id))
             let like = document.querySelector(`#cmt${comments[i].id}`);
@@ -128,11 +131,11 @@ export const DisplayTweets = (props) => {
                                     <div id={tweet.id} className='tweet-message' onClick={() => {getComments(tweet.id); checkCommentInteractionStatus(tweet.id)}}>{tweet.message}</div>
                                     <div id={tweet.id} className="interaction-btns-container">
                                         <div className="interaction-btns">
-                                            <img className='tweet-interaction-btn like-btn' src={Heart} alt='like-btn' onClick={(e) => like(e)} id={tweet.id}/>
+                                            <img className='tweet-interaction-btn like-btn' src={Heart} alt='like-btn' onClick={(e) => like(e)} id={`id${tweet.id}`}/>
                                             <div className='likes'>{tweet.likes.length}</div>
                                         </div>
                                         <div className="interaction-btns">
-                                            <img src={Retweet} alt='retweet-btn' onClick={(e) => retweet(e)} id={tweet.id} className='tweet-interaction-btn retweet-btn' />
+                                            <img src={Retweet} alt='retweet-btn' onClick={(e) => retweet(e)} id={`id${tweet.id}`} className='tweet-interaction-btn retweet-btn' />
                                             <div className='retweets'>{tweet.retweets.length}</div>
                                         </div>
                                         <div className="interaction-btns">
@@ -156,15 +159,15 @@ export const DisplayTweets = (props) => {
                                 <div id={tweet.id} className='tweet-message' onClick={() => {getComments(tweet.id); checkCommentInteractionStatus(tweet.id)}}>{tweet.message}</div>
                                 <div id={tweet.id} className="interaction-btns-container">
                                     <div className="interaction-btns">
-                                        <img className='tweet-interaction-btn like-btn' src={Heart} alt='like-btn' onClick={(e) => like(e)} id={tweet.id}/>
+                                        <img className='tweet-interaction-btn like-btn' src={Heart} alt='like-btn' onClick={(e) => like(e)} id={`id${tweet.id}`}/>
                                         <div className='likes'>{tweet.likes.length}</div>
                                     </div>
                                     <div className="interaction-btns">
-                                        <img src={Retweet} alt='retweet-btn' onClick={(e) => retweet(e)} id={tweet.id} className='tweet-interaction-btn retweet-btn' />
+                                        <img src={Retweet} alt='retweet-btn' onClick={(e) => retweet(e)} id={`id${tweet.id}`} className='tweet-interaction-btn retweet-btn' />
                                         <div className='retweets'>{tweet.retweets.length}</div>
                                     </div>
                                     <div className="interaction-btns">
-                                        <img src={CommentIcon} alt='comment-btn' onClick={() => {if(checkSignIn()) setCommentMode({open: (!commentMode.open), id: `${tweet.id}`})}} id={tweet.id} className='tweet-interaction-btn' />
+                                        <img src={CommentIcon} alt='comment-btn' onClick={() => {if(checkSignIn()) setCommentMode({open: (!commentMode.open), id: `${tweet.id}`})}} id={`${tweet.id}`} className='tweet-interaction-btn' />
                                         <div className='comments'>{tweet.comments}</div>
                                     </div>
                                 </div>

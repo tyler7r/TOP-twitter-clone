@@ -143,8 +143,8 @@ function App() {
     if (tweets.length === 0) return
     for (let i = 0; i < tweets.length; i++) {
       let getTweet = await getDoc(doc(db, 'tweets', tweets[i].id))
-      const like = document.querySelector(`#${tweets[i].id}.like-btn`)
-      const retweet = document.querySelector(`#${tweets[i].id}.retweet-btn`)
+      const like = document.querySelector(`#id${tweets[i].id}.like-btn`)
+      const retweet = document.querySelector(`#id${tweets[i].id}.retweet-btn`)
       if (like === null) continue;
       if (currentUser !== '') {
         if (getTweet.data().likes.includes(currentUser)) {

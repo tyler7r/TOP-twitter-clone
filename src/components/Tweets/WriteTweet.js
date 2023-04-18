@@ -45,7 +45,7 @@ const TweetDraft = (props) => {
     const { tweet, setTweet, submitTweet } = props
     return (
         <div id='tweet-draft'>
-            <input value={tweet} type='text' name='tweet-text' id='tweet-text' placeholder="What's on your mind?" onChange={(e) => {setTweet(e.target.value)}} />
+            <input value={tweet} type='text' name='tweet-text' id='tweet-text' placeholder="What's on your mind?" onChange={(e) => {setTweet(e.target.value)}} maxLength={160} />
             <button onClick={(e) => {submitTweet(e, tweet)}} type='submit' id='submit-tweet'>Tweet</button>
         </div>
     )

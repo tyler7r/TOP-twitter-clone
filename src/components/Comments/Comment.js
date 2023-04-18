@@ -44,7 +44,7 @@ const CommentDraft = (props) => {
     const { commentMsg, submitComment, setCommentMsg } = props
     return (
         <div id='tweet-draft'>
-            <input value={commentMsg} type='text' name='comment-text' id='comment-text' placeholder="What's your response" onChange={(e) => {setCommentMsg(e.target.value)}} />
+            <input value={commentMsg} type='text' name='comment-text' id='comment-text' placeholder="What's your response" onChange={(e) => {setCommentMsg(e.target.value)}} maxLength={160} />
             <button onClick={(e) => {submitComment(e, commentMsg)}} type='submit' id='submit-comment'>Submit</button>
         </div>
     )

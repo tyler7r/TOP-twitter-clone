@@ -9,7 +9,7 @@ export const DisplayComments = (props) => {
 
     useEffect(() => {
         checkLike(tweetId);
-    }, [comments, openTweet, tweetId, checkLike])
+    }, [openTweet])
 
     const like = async (e) => {
         const cmtId = e.target.id.slice(3);
