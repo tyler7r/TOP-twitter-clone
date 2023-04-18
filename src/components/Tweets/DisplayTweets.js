@@ -77,14 +77,23 @@ export const DisplayTweets = (props) => {
     const retrieveComments = async (id) => {
         let copy = [];
         const querySnapshot = await getDocs(collection(db, 'tweets', id, 'comments'));
-        querySnapshot.forEach((doc) => { 
+        querySnapshot.forEach((doc) => {
             copy.push(doc.data())
         })
         setComments(copy);
     }
 
     const checkCommentInteractionStatus = async (id) => {
-        
+        for (let i = 0; i < comments.length; i++) {
+            let cmt = await getDoc(doc(db, 'tweets', id, 'comments', comments[i].id))
+            let like = document.querySelector(`#cmt${comments[i].id}`);
+            if (like === null) continue
+            if (cmt.data().likes.includes(props.currentUser)) {
+                like.classList.add('liked')
+            } else {
+                like.classList.remove('liked');
+            }
+        }
     }
 
     const deleteTweet = async (e) => {
@@ -107,7 +116,7 @@ export const DisplayTweets = (props) => {
                                 <Link className='profile-pic-link' to='/profile'><img onClick={() => {props.setInteraction(true); props.setCurrentProfile({author: tweet.author, name: tweet.name, profilePic: tweet.profilePic }); props.setProfileView('tweets'); props.setSearch(''); props.setSearchMode(false)}} className='tweet-profilePic' src={tweet.profilePic} alt='tweet-profilePic' /></Link>
                                 <div id={tweet.id} className="tweet-details">
                                     <div id={tweet.id} className='tweet-name' onClick={() => getComments(tweet.id)}>{tweet.name}</div>
-                                    <div id={tweet.id} className='tweet-message' onClick={() => {getComments(tweet.id)}}>{tweet.message}</div>
+                                    <div id={tweet.id} className='tweet-message' onClick={() => {getComments(tweet.id); checkCommentInteractionStatus(tweet.id)}}>{tweet.message}</div>
                                     <div id={tweet.id} className="interaction-btns-container">
                                         <div className="interaction-btns">
                                             <img className='tweet-interaction-btn like-btn' src={Heart} alt='like-btn' onClick={(e) => {if(props.checkSignIn()) like(e)}} id={tweet.id}/>

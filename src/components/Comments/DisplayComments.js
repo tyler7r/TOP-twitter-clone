@@ -6,26 +6,13 @@ import '../../styles/tweet.css'
 
 export const DisplayComments = (props) => {
 
-    // useEffect(() => {
-    //     const checkLike = async () => {
-    //         console.log('checkLike ran')
-    //         if (props.comments.length !== 0) {
-    //             for (let i = 0; i < props.comments.length; i++) {
-    //                 const like = document.querySelector(`#${props.comments[i].id}.comment-like`)
-    //                 const cmt = await getDoc(doc(db, 'tweets', props.tweetId, 'comments', props.comments[i].id));
-    //                 if (cmt.data().likes.includes(props.currentUser)) {
-    //                     like.classList.add('liked')
-    //                 } else {
-    //                     like.classList.remove('liked')
-    //                 }
-    //             }
-    //         }
-    //     }
-    //     checkLike();
-    // }, [props.comments, props.openTweet])
+    useEffect(() => {
+        props.checkLike(props.tweetId);
+    }, [props.comments, props.openTweet])
 
     const like = async (e) => {
-        const docRef = doc(db, 'tweets', props.tweetId, 'comments', e.target.id);
+        const cmtId = e.target.id.slice(3);
+        const docRef = doc(db, 'tweets', props.tweetId, 'comments', cmtId);
         const snapshot = await getDoc(docRef);
         const likes = snapshot.data().likes
         if (likes.includes(props.uid())) {
@@ -58,7 +45,7 @@ export const DisplayComments = (props) => {
                             <div key={Math.random()} className='comment'>
                                 <div className='comment-message'>{comment.message}</div>
                                 <div className='comment-interaction-container'>
-                                    <img id={comment.id} onClick={(e) => {if(props.checkSignIn()) {like(e)}; props.checkLike(props.tweetId)}} className='comment-interaction-btn comment-like' src={Heart} alt='like-icon' />
+                                    <img id={`cmt${comment.id}`} onClick={(e) => {if(props.checkSignIn()) {like(e)}; props.checkLike(props.tweetId)}} className={`comment-interaction-btn comment-like`} src={Heart} alt='like-icon' />
                                     <div className='comment-likes'>{comment.likes.length}</div>
                                     <div id={comment.id} onClick={(e) => {if(props.checkSignIn()) deleteComment(e)}} className='comment-delete'>Delete</div>
                                 </div>
@@ -69,7 +56,7 @@ export const DisplayComments = (props) => {
                             <div key={Math.random()} className='comment'>
                                 <div className='comment-message'>{comment.message}</div>
                                 <div className='comment-interaction-container'>
-                                    <img id={comment.id} onClick={(e) => {if(props.checkSignIn()) {like(e)}; props.checkLike(props.tweetId)}} className='comment-interaction-btn comment-like' src={Heart} alt='like-icon' />
+                                    <img id={`cmt${comment.id}`} onClick={(e) => {if(props.checkSignIn()) {like(e)}; props.checkLike(props.tweetId)}} className={`comment-interaction-btn comment-like`} src={Heart} alt='like-icon' />
                                     <div className='comment-likes'>{comment.likes.length}</div>
                                 </div>
                             </div>
