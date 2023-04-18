@@ -32,9 +32,11 @@ function App() {
   useEffect(() => {
     console.log('also run');
     getTweets();
+    checkInteractionStatus();
   }, [])
 
   useEffect(() => {
+    checkInteractionStatus();
     if (interaction === false) return;
     else {
       if (currentProfile !== '') {
@@ -138,6 +140,25 @@ function App() {
     setInteraction(false);
   }
 
+  const checkInteractionStatus = async () => {
+    if (tweets.length === 0) return
+    for (let i = 0; i < tweets.length; i++) {
+      let getTweet = await getDoc(doc(db, 'tweets', tweets[i].id))
+      const like = document.querySelector(`#${tweets[i].id}.like-btn`)
+      const retweet = document.querySelector(`#${tweets[i].id}.retweet-btn`)
+      if (getTweet.data().likes.includes(currentUser)) {
+        like.classList.add('liked')
+      } else {
+        like.classList.remove('liked')
+      }
+      if (getTweet.data().retweets.includes(currentUser)) {
+        retweet.classList.add('retweeted')
+      } else {
+        retweet.classList.remove('retweeted')
+      }
+    }
+  }
+
   const getSearchResults = async (search) => {
     let empty = [];
     const tweets = await getDocs(collection(db, 'tweets'));
@@ -146,6 +167,7 @@ function App() {
         empty.push(tweet.data())
       }
     })
+    setSearch('');
     setTweets(empty);
     setInteraction(false);
   }

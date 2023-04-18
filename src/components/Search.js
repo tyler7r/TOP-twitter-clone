@@ -9,7 +9,7 @@ export const Search = (props) => {
 
     return (
         <div id='searchbar'>
-            <input type='text' value={props.search} name='search' id='search' placeholder='Type something...' onChange={(e) => props.setSearch(e.target.value)}/>
+            <input type='text' value={props.search} name='search' id='search' placeholder='Search Twitter Clone' onChange={(e) => props.setSearch(e.target.value)}/>
             <button onClick={(e) => {submitSearch(e)}} type='submit'>Submit</button>
         </div>
     )

@@ -1,9 +1,9 @@
 .tweet {
     display: grid;
     text-align: center;
-    border: 2px solid lightgray;
-    padding: 4px;
-    width: 80%;
+    border: 1px solid rgb(211, 211, 211, 0.6);
+    padding: 8px;
+    width: 60%;
     grid-template-columns: 1fr 8fr;
 }
 
@@ -12,6 +12,10 @@
     flex-direction: column;
     gap: 4px;
     margin-left: 8px;
+}
+
+.tweet:hover {
+    background-color: rgb(211, 211, 211, 0.4);
 }
 
 .tweet-profilePic {
@@ -34,21 +38,27 @@
     margin-bottom: 8px;
 }
 
+.tweet-message:hover {
+    cursor: pointer;
+}
+
 .interaction-btns-container {
     display: flex;
-    gap: 4px;
+    gap: 2px;
     justify-content: space-around;
 }
 
 .interaction-btns {
     display: flex;
-    gap: 2px;
+    gap: 6px;
+    cursor: pointer;
 }
 
 .tweet-interaction-btn {
     height: 20px;
     cursor: pointer;
 }
+
 .comment {
     display: flex;
     flex-direction: column;
@@ -57,4 +67,12 @@
 .comment-interaction-btn {
     height: 15px;
     cursor: pointer;
+}
+
+.liked {
+    filter: invert(16%) sepia(94%) saturate(3836%) hue-rotate(352deg) brightness(80%) contrast(109%);
+}
+
+.retweeted {
+    filter: invert(32%) sepia(88%) saturate(1137%) hue-rotate(92deg) brightness(96%) contrast(100%);
 }
