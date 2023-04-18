@@ -6,23 +6,23 @@ import '../../styles/tweet.css'
 
 export const DisplayComments = (props) => {
 
-    useEffect(() => {
-        const checkLike = async () => {
-            console.log('checkLike ran')
-            if (props.comments.length !== 0) {
-                for (let i = 0; i < props.comments.length; i++) {
-                    const like = document.querySelector(`#${props.comments[i].id}.comment-like`)
-                    const cmt = await getDoc(doc(db, 'tweets', props.tweetId, 'comments', props.comments[i].id));
-                    if (cmt.data().likes.includes(props.currentUser)) {
-                        like.classList.add('liked')
-                    } else {
-                        like.classList.remove('liked')
-                    }
-                }
-            }
-        }
-        checkLike();
-    }, [props.comments, props.openTweet])
+    // useEffect(() => {
+    //     const checkLike = async () => {
+    //         console.log('checkLike ran')
+    //         if (props.comments.length !== 0) {
+    //             for (let i = 0; i < props.comments.length; i++) {
+    //                 const like = document.querySelector(`#${props.comments[i].id}.comment-like`)
+    //                 const cmt = await getDoc(doc(db, 'tweets', props.tweetId, 'comments', props.comments[i].id));
+    //                 if (cmt.data().likes.includes(props.currentUser)) {
+    //                     like.classList.add('liked')
+    //                 } else {
+    //                     like.classList.remove('liked')
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     checkLike();
+    // }, [props.comments, props.openTweet])
 
     const like = async (e) => {
         const docRef = doc(db, 'tweets', props.tweetId, 'comments', e.target.id);

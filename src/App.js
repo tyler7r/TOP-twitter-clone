@@ -47,6 +47,7 @@ function App() {
         getTweets();
       }
     }
+    // checkInteractionStatus();
   }, [interaction, currentProfile, searchMode]);
 
   const signIn = async () => {
@@ -142,19 +143,23 @@ function App() {
 
   const checkInteractionStatus = async () => {
     if (tweets.length === 0) return
+    console.log(tweets);
     for (let i = 0; i < tweets.length; i++) {
       let getTweet = await getDoc(doc(db, 'tweets', tweets[i].id))
       const like = document.querySelector(`#${tweets[i].id}.like-btn`)
       const retweet = document.querySelector(`#${tweets[i].id}.retweet-btn`)
-      if (getTweet.data().likes.includes(currentUser)) {
-        like.classList.add('liked')
-      } else {
-        like.classList.remove('liked')
-      }
-      if (getTweet.data().retweets.includes(currentUser)) {
-        retweet.classList.add('retweeted')
-      } else {
-        retweet.classList.remove('retweeted')
+      if (like === null) continue;
+      if (currentUser !== '') {
+        if (getTweet.data().likes.includes(currentUser)) {
+          like.classList.add('liked')
+        } else {
+          like.classList.remove('liked')
+        }
+        if (getTweet.data().retweets.includes(currentUser)) {
+          retweet.classList.add('retweeted')
+        } else {
+          retweet.classList.remove('retweeted')
+        }
       }
     }
   }

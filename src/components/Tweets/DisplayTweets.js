@@ -104,7 +104,7 @@ export const DisplayTweets = (props) => {
                     if (tweet.author === props.currentUser) {
                         return (
                             <div key={tweet.id} className='tweet'>
-                                <Link className='profile-pic-link' to='/profile'><img onClick={() => {props.setCurrentProfile(tweet.author); props.setProfileView('tweets'); props.setSearch(''); props.setSearchMode(false); props.setInteraction(true)}} className='tweet-profilePic' src={tweet.profilePic} alt='tweet-profilePic' /></Link>
+                                <Link className='profile-pic-link' to='/profile'><img onClick={() => {props.setInteraction(true); props.setCurrentProfile(tweet.author); props.setProfileView('tweets'); props.setSearch(''); props.setSearchMode(false)}} className='tweet-profilePic' src={tweet.profilePic} alt='tweet-profilePic' /></Link>
                                 <div id={tweet.id} className="tweet-details">
                                     <div id={tweet.id} className='tweet-name' onClick={() => getComments(tweet.id)}>{tweet.name}</div>
                                     <div id={tweet.id} className='tweet-message' onClick={() => {getComments(tweet.id)}}>{tweet.message}</div>
@@ -132,7 +132,7 @@ export const DisplayTweets = (props) => {
                     } else {
                     return (
                         <div key={tweet.id} className='tweet'>
-                            <Link to='/profile'><img onClick={() => {props.setCurrentProfile(tweet.author)}} className='tweet-profilePic' src={tweet.profilePic} alt='tweet-profilePic' /></Link>
+                            <Link to='/profile'><img onClick={() => {props.setInteraction(true); props.setCurrentProfile(tweet.author)}} className='tweet-profilePic' src={tweet.profilePic} alt='tweet-profilePic' /></Link>
                             <div id={tweet.id} className="tweet-details">
                                 <div id={tweet.id} className='tweet-name' onClick={() => getComments(tweet.id)}>{tweet.name}</div>
                                 <div id={tweet.id} className='tweet-message' onClick={() => {getComments(tweet.id); checkCommentInteractionStatus(tweet.id)}}>{tweet.message}</div>
