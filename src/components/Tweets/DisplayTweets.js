@@ -128,7 +128,7 @@ export const DisplayTweets = (props) => {
                     if (tweet.author === currentUser) {
                         return (
                             <div key={tweet.id} className='tweet'>
-                                <Link className='profile-pic-link' to='/profile'><img onClick={() => {setInteraction(true); setCurrentProfile({author: tweet.author, name: tweet.name, profilePic: tweet.profilePic }); setProfileView('tweets'); setSearch(''); setSearchMode(false)}} className='tweet-profilePic' src={tweet.profilePic} alt='tweet-profilePic' /></Link>
+                                <Link className='profile-pic-link' to='/profile'><img onClick={() => {setInteraction(true); setCurrentProfile({author: tweet.author, name: tweet.name, profilePic: tweet.profilePic }); setProfileView('tweets')}} className='tweet-profilePic' src={tweet.profilePic} alt='tweet-profilePic' /></Link>
                                 <div id={tweet.id} className="tweet-details">
                                     <div id={tweet.id} className='tweet-name' onClick={() => getComments(tweet.id)}>{tweet.name}</div>
                                     <div id={tweet.id} className='tweet-message' onClick={() => {getComments(tweet.id); checkCommentInteractionStatus(tweet.id)}}>{tweet.message}</div>

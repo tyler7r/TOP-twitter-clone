@@ -5,7 +5,7 @@ import { getDoc, doc, updateDoc, arrayRemove, arrayUnion } from 'firebase/firest
 import { db } from '../firebase';
 
 export const Profile = (props) => {
-    const { setCurrentProfile, setSearchMode, setSearch, signIn, logOut, isUserSignedIn, profilePic, username, setProfileView, setInteraction, currentProfile, profileView, uid, checkSignIn, currentUser, tweets, setTweets, interaction } = props;
+    const { setCurrentProfile, setSearchMode, setSearch, signIn, logOut, isUserSignedIn, profilePic, username, setProfileView, setInteraction, currentProfile, profileView, uid, checkSignIn, currentUser, tweets, setTweets, interaction, setHomeView } = props;
 
     const [draftMode, setDraftMode] = useState(false);
     const [followCount, setFollowCount] = useState({})
@@ -19,6 +19,9 @@ export const Profile = (props) => {
 
     useEffect(() => {
         if (interaction === true) {
+            setHomeView('all');
+            setSearchMode(false);
+            setSearch('');
             getFollowCounts()
         }
     }, [interaction])

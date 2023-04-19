@@ -3,7 +3,7 @@ import { db } from '../../firebase';
 import { addDoc, collection, serverTimestamp, updateDoc, doc } from 'firebase/firestore';
 
 export const WriteTweet = (props) => {
-    const { tweets, uid, username, profilePic, setTweets, setInteraction, setDraftMode, draftMode, checkSignIn } = props 
+    const { tweets, uid, username, profilePic, setTweets, setInteraction, setDraftMode, draftMode, checkSignIn, searchMode } = props 
     const [tweet, setTweet] = useState('');
 
     const submitTweet = async (e, message) => {
@@ -33,7 +33,7 @@ export const WriteTweet = (props) => {
         setTweet('');
     }
 
-    if (draftMode === false) {
+    if (draftMode === false && searchMode === false) {
         return <div id='tweet-button' onClick={() => {if (checkSignIn() === true){setDraftMode(true)}}}>Tweet</div>
     } else if (draftMode === true) {
         return (
