@@ -17,6 +17,7 @@ function App() {
   const [profileView, setProfileView] = useState('tweets');
   const [search, setSearch] = useState('')
   const [searchMode, setSearchMode] = useState(false);
+  const [homeView, setHomeView] = useState('all')
 
   const getTweets = async () => {
     let empty = [];
@@ -43,11 +44,13 @@ function App() {
         getUserInteractions(currentProfile.author);
       } else if (searchMode === true) {
         getSearchResults(search)
+      } else if (homeView === 'following') {
+        getFollowingView();
       } else {
         getTweets();
       }
     }
-  }, [interaction, currentProfile, searchMode]);
+  }, [interaction, currentProfile, searchMode, homeView]);
 
   const signIn = async () => {
     const provider = new GoogleAuthProvider();
@@ -172,11 +175,27 @@ function App() {
     setInteraction(false);
   }
 
+  const getFollowingView = async () => {
+    let empty = [];
+    let getFollowedUsers = await getDoc(doc(db, 'users', currentUser));
+    let followedUsers = getFollowedUsers.data().following;
+    for (let i = 0; i < followedUsers.length; i++) {
+      let getUser = await getDoc(doc(db, 'users', followedUsers[i]))
+      let userTweets = getUser.data().tweets
+      for (let j = 0; j < userTweets.length; j++) {
+        let getTweet = await getDoc(doc(db, 'tweets', userTweets[j].id))
+        empty.push(getTweet.data())
+      }
+    }
+    setTweets(empty);
+    setInteraction(false);
+  }
+
   return (
     <HashRouter>
       <div className="App">
         <Routes>
-          <Route path='/' element={<Home setSearchMode={setSearchMode} search={search} setSearch={setSearch} setProfileView={setProfileView} currentProfile={currentProfile} setCurrentProfile={setCurrentProfile} currentUser={currentUser} checkSignIn={checkSignIn} signIn={signIn} isUserSignedIn={signedIn} logOut={logOutUser} profilePic={getProfilePic} username={getUserName} uid={getUID} tweets={tweets} setTweets={setTweets} setInteraction={setInteraction} />} />
+          <Route path='/' element={<Home setSearchMode={setSearchMode} search={search} setSearch={setSearch} setProfileView={setProfileView} currentProfile={currentProfile} setCurrentProfile={setCurrentProfile} currentUser={currentUser} checkSignIn={checkSignIn} signIn={signIn} isUserSignedIn={signedIn} logOut={logOutUser} profilePic={getProfilePic} username={getUserName} uid={getUID} tweets={tweets} setTweets={setTweets} setInteraction={setInteraction} setHomeView={setHomeView} />} />
           <Route path='/profile' element={<Profile setSearchMode={setSearchMode} search={search} setSearch={setSearch} profileView={profileView} setProfileView={setProfileView} currentProfile={currentProfile} setCurrentProfile={setCurrentProfile} currentUser={currentUser} checkSignIn={checkSignIn} signIn={signIn} isUserSignedIn={signedIn} logOut={logOutUser} profilePic={getProfilePic} username={getUserName} uid={getUID} tweets={tweets} setTweets={setTweets} setInteraction={setInteraction} interaction={interaction} />} />
         </Routes>
       </div>
