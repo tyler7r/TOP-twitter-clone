@@ -6,6 +6,7 @@ import { db } from './firebase';
 import Logo from './images/iconmonstr-twitter-1.svg'
 import { Home } from './components/Home';
 import { Profile } from './components/Profile';
+import './styles/main.css';
 
 function App() {
   const [signedIn, setSignedIn] = useState(false);

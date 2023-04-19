@@ -7,6 +7,7 @@ export const WriteTweet = (props) => {
     const [tweet, setTweet] = useState('');
 
     const submitTweet = async (e, message) => {
+        if (message.length === 0) return;
         let copy = [...tweets];
         e.preventDefault();
         try {

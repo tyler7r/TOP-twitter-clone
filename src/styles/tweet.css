@@ -3,7 +3,7 @@
     text-align: center;
     border: 1px solid rgb(211, 211, 211, 0.6);
     padding: 8px;
-    width: 60%;
+    width: 100%;
     grid-template-columns: 1fr 8fr;
 }
 
@@ -44,8 +44,9 @@
 
 .interaction-btns-container {
     display: flex;
-    gap: 2px;
     justify-content: space-around;
+    align-items: center;
+    text-align: center;
 }
 
 .interaction-btns {
@@ -69,10 +70,42 @@
     cursor: pointer;
 }
 
+.retweet-btn {
+    height: 24px;
+}
+
+.tweet-delete {
+    color: rgb(72, 72, 72);
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.tweet-delete:hover {
+    filter: invert(16%) sepia(94%) saturate(3836%) hue-rotate(352deg) brightness(80%) contrast(109%);
+}
+
 .liked {
     filter: invert(16%) sepia(94%) saturate(3836%) hue-rotate(352deg) brightness(80%) contrast(109%);
 }
 
 .retweeted {
     filter: invert(32%) sepia(88%) saturate(1137%) hue-rotate(92deg) brightness(96%) contrast(100%);
+}
+
+.tweet-time {
+    display: flex;
+    gap: 8px;
+    align-self: end;
+    align-items: center;
+}
+
+.tweet-date {
+    font-weight: bold;
+    font-size: 14px;
+    color: rgb(72, 72, 72);
+}
+
+.tweet-time-details {
+    color: darkgray;
+    font-size: 12px;
 }

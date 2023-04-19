@@ -1,11 +1,12 @@
 import React, { useEffect } from "react";
+import { Link } from "react-router-dom";
 import { db } from "../../firebase";
 import { deleteDoc, doc, updateDoc, arrayUnion, arrayRemove, getDoc } from 'firebase/firestore'
 import Heart from '../../images/heart.svg'
 import '../../styles/tweet.css'
 
 export const DisplayComments = (props) => {
-    const { checkLike, tweetId, comments, openTweet, uid, retrieveComments, comment, currentUser, checkSignIn } = props
+    const { checkLike, tweetId, comments, openTweet, uid, retrieveComments, comment, currentUser, checkSignIn, setInteraction, setCurrentProfile, setSearch, setSearchMode, setProfileView } = props
 
     useEffect(() => {
         checkLike(tweetId);
@@ -44,21 +45,29 @@ export const DisplayComments = (props) => {
                     if (comment.author === currentUser) {
                         return (
                             <div key={Math.random()} className='comment'>
-                                <div className='comment-message'>{comment.message}</div>
-                                <div className='comment-interaction-container'>
-                                    <img id={`cmt${comment.id}`} onClick={(e) => {if(checkSignIn()) {like(e)}}} className={`comment-interaction-btn comment-like`} src={Heart} alt='like-icon' />
-                                    <div className='comment-likes'>{comment.likes.length}</div>
-                                    <div id={comment.id} onClick={(e) => {if(checkSignIn()) deleteComment(e)}} className='comment-delete'>Delete</div>
+                                <Link to='/profile'><img onClick={() => {setInteraction(true); setCurrentProfile({author: comment.author, name: comment.name, profilePic: comment.profilePic}); setProfileView('tweets'); setSearch(''); setSearchMode(false)}} className='comment-profilePic' src={comment.profilePic} alt='comment-profilePic' /></Link>
+                                <div className="comment-details">
+                                    <div id={comment.id} className='comment-name'>{comment.name}</div>
+                                    <div className='comment-message'>{comment.message}</div>
+                                    <div className='comment-interaction-container'>
+                                        <img id={`cmt${comment.id}`} onClick={(e) => {if(checkSignIn()) {like(e)}}} className={`comment-interaction-btn comment-like`} src={Heart} alt='like-icon' />
+                                        <div className='comment-likes'>{comment.likes.length}</div>
+                                        <div id={comment.id} onClick={(e) => {if(checkSignIn()) deleteComment(e)}} className='comment-delete'>Delete</div>
+                                    </div>
                                 </div>
                             </div>
                         )
                     } else {
                         return (
                             <div key={Math.random()} className='comment'>
-                                <div className='comment-message'>{comment.message}</div>
-                                <div className='comment-interaction-container'>
-                                    <img id={`cmt${comment.id}`} onClick={(e) => {if(checkSignIn()) {like(e)}}} className={`comment-interaction-btn comment-like`} src={Heart} alt='like-icon' />
-                                    <div className='comment-likes'>{comment.likes.length}</div>
+                                <Link to='/profile'><img onClick={() => {setInteraction(true); setCurrentProfile({author: comment.author, name: comment.name, profilePic: comment.profilePic}); setProfileView('tweets'); setSearch(''); setSearchMode(false)}} className='comment-profilePic' src={comment.profilePic} alt='comment-profilePic' /></Link>
+                                <div className="comment-details">
+                                    <div id={comment.id} className='comment-name'>{comment.name}</div>
+                                    <div className='comment-message'>{comment.message}</div>
+                                    <div className='comment-interaction-container'>
+                                        <img id={`cmt${comment.id}`} onClick={(e) => {if(checkSignIn()) {like(e)}}} className={`comment-interaction-btn comment-like`} src={Heart} alt='like-icon' />
+                                        <div className='comment-likes'>{comment.likes.length}</div>
+                                    </div>
                                 </div>
                             </div>
                         )
