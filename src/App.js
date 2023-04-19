@@ -99,6 +99,9 @@ function App() {
         tweets: [],
         followers: [],
         following: [],
+        profilePic: getProfilePic(),
+        bioPic: getProfilePic(),
+        bio: '',
       })
     }
     setCurrentUser(getUID());

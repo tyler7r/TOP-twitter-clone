@@ -28,6 +28,12 @@
     justify-self: start;
     font-weight: bold;
     width: 100%;
+    text-decoration: none;
+    color:rgb(72, 72, 72);
+}
+
+.tweet-name:hover {
+    text-decoration: underline;
 }
 
 .tweet-message {

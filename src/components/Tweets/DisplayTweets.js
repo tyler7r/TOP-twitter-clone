@@ -130,7 +130,7 @@ export const DisplayTweets = (props) => {
                             <div key={tweet.id} className='tweet'>
                                 <Link className='profile-pic-link' to='/profile'><img onClick={() => {setInteraction(true); setCurrentProfile({author: tweet.author, name: tweet.name, profilePic: tweet.profilePic }); setProfileView('tweets')}} className='tweet-profilePic' src={tweet.profilePic} alt='tweet-profilePic' /></Link>
                                 <div id={tweet.id} className="tweet-details">
-                                    <div id={tweet.id} className='tweet-name' onClick={() => getComments(tweet.id)}>{tweet.name}</div>
+                                    <Link to='/profile' className='tweet-name'><div id={tweet.id} onClick={() => {setInteraction(true); setCurrentProfile({author: tweet.author, name: tweet.name, profilePic: tweet.profilePic })}}>{tweet.name}</div></Link>
                                     <div id={tweet.id} className='tweet-message' onClick={() => {getComments(tweet.id); checkCommentInteractionStatus(tweet.id)}}>{tweet.message}</div>
                                     <div id={tweet.id} className="interaction-btns-container">
                                         <div className="interaction-btns">
@@ -161,7 +161,7 @@ export const DisplayTweets = (props) => {
                         <div key={tweet.id} className='tweet'>
                             <Link to='/profile'><img onClick={() => {setInteraction(true); setCurrentProfile({author: tweet.author, name: tweet.name, profilePic: tweet.profilePic}); setProfileView('tweets'); setSearch(''); setSearchMode(false)}} className='tweet-profilePic' src={tweet.profilePic} alt='tweet-profilePic' /></Link>
                             <div id={tweet.id} className="tweet-details">
-                                <div id={tweet.id} className='tweet-name' onClick={() => getComments(tweet.id)}>{tweet.name}</div>
+                                <Link to='/profile' className='tweet-name'><div id={tweet.id} onClick={() => {setInteraction(true); setCurrentProfile({author: tweet.author, name: tweet.name, profilePic: tweet.profilePic })}}>{tweet.name}</div></Link>
                                 <div id={tweet.id} className='tweet-message' onClick={() => {getComments(tweet.id); checkCommentInteractionStatus(tweet.id)}}>{tweet.message}</div>
                                 <div id={tweet.id} className="interaction-btns-container">
                                     <div className="interaction-btns">
