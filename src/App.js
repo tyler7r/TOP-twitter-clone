@@ -94,6 +94,8 @@ function App() {
         likes: [],
         retweets: [],
         tweets: [],
+        followers: [],
+        following: [],
       })
     }
     setCurrentUser(getUID());
@@ -103,11 +105,6 @@ function App() {
     let empty = [];
     const user = doc(db, 'users', author)
     const tweets = await getDocs(collection(db, 'tweets'))
-    updateDoc(user, {
-      tweets: [],
-      likes: [],
-      retweets: [],
-    })
     tweets.forEach((tweet) => {
       if (tweet.data().likes.includes(author)) {
         updateDoc(user, {
@@ -180,7 +177,7 @@ function App() {
       <div className="App">
         <Routes>
           <Route path='/' element={<Home setSearchMode={setSearchMode} search={search} setSearch={setSearch} setProfileView={setProfileView} currentProfile={currentProfile} setCurrentProfile={setCurrentProfile} currentUser={currentUser} checkSignIn={checkSignIn} signIn={signIn} isUserSignedIn={signedIn} logOut={logOutUser} profilePic={getProfilePic} username={getUserName} uid={getUID} tweets={tweets} setTweets={setTweets} setInteraction={setInteraction} />} />
-          <Route path='/profile' element={<Profile setSearchMode={setSearchMode} search={search} setSearch={setSearch} profileView={profileView} setProfileView={setProfileView} currentProfile={currentProfile} setCurrentProfile={setCurrentProfile} currentUser={currentUser} checkSignIn={checkSignIn} signIn={signIn} isUserSignedIn={signedIn} logOut={logOutUser} profilePic={getProfilePic} username={getUserName} uid={getUID} tweets={tweets} setTweets={setTweets} setInteraction={setInteraction}/>} />
+          <Route path='/profile' element={<Profile setSearchMode={setSearchMode} search={search} setSearch={setSearch} profileView={profileView} setProfileView={setProfileView} currentProfile={currentProfile} setCurrentProfile={setCurrentProfile} currentUser={currentUser} checkSignIn={checkSignIn} signIn={signIn} isUserSignedIn={signedIn} logOut={logOutUser} profilePic={getProfilePic} username={getUserName} uid={getUID} tweets={tweets} setTweets={setTweets} setInteraction={setInteraction} interaction={interaction} />} />
         </Routes>
       </div>
     </HashRouter>
