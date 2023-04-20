@@ -15,7 +15,7 @@ export const Home = (props) => {
             <Header setProfileView={setProfileView} setSearch={setSearch} setSearchMode={setSearchMode} setCurrentProfile={setCurrentProfile} setInteraction={setInteraction} signIn={signIn} logOut={logOut} isUserSignedIn={isUserSignedIn} profilePic={profilePic} username={username} currentUser={currentUser} />
             <Search setInteraction={setInteraction} setSearchMode={setSearchMode} search={search} setSearch={setSearch} />
             <HomeView setHomeView={setHomeView} checkSignIn={checkSignIn} setInteraction={setInteraction} searchMode={searchMode} />
-            <WriteTweet uid={uid} checkSignIn={checkSignIn} tweets={tweets} setTweets={setTweets} draftMode={draftMode} setDraftMode={setDraftMode} profilePic={profilePic} username={username} setInteraction={setInteraction} searchMode={searchMode} />
+            <WriteTweet currentUser={currentUser} uid={uid} checkSignIn={checkSignIn} tweets={tweets} setTweets={setTweets} draftMode={draftMode} setDraftMode={setDraftMode} profilePic={profilePic} username={username} setInteraction={setInteraction} searchMode={searchMode} />
             <DisplayTweets setSearchMode={setSearchMode} setSearch={setSearch} draftMode={draftMode} setDraftMode={setDraftMode} currentProfile={currentProfile} setCurrentProfile={setCurrentProfile} uid={uid} checkSignIn={checkSignIn} username={username} profilePic={profilePic} tweets={tweets} setTweets={setTweets} setInteraction={setInteraction} currentUser={currentUser} setProfileView={setProfileView} />
         </div>
     )

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { Header } from './Header';
 import { DisplayTweets } from './Tweets/DisplayTweets';
 import { getDoc, doc, updateDoc, arrayRemove, arrayUnion } from 'firebase/firestore';
@@ -6,7 +7,18 @@ import { db } from '../firebase';
 import '../styles/profile.css'
 
 export const Profile = (props) => {
-    const { setCurrentProfile, setSearchMode, setSearch, signIn, logOut, isUserSignedIn, profilePic, username, setProfileView, setInteraction, currentProfile, profileView, uid, checkSignIn, currentUser, tweets, setTweets, interaction, setHomeView } = props;
+    const { id } = useParams();
+
+    const { userUpdate, setUserUpdate, setCurrentProfile, setSearchMode, setSearch, signIn, logOut, isUserSignedIn, profilePic, username, setProfileView, setInteraction, currentProfile, profileView, uid, checkSignIn, currentUser, tweets, setTweets, interaction, setHomeView } = props;
+
+    useEffect(() => {
+        const getProfile = async () => {
+            const getUser = await getDoc(doc(db, 'users', id))
+            console.log(getUser.data());
+            setCurrentProfile(getUser.data());
+        }
+        getProfile();
+    }, [])
 
     const [draftMode, setDraftMode] = useState(false);
     const [followCount, setFollowCount] = useState({})
@@ -16,7 +28,7 @@ export const Profile = (props) => {
     const [profileImg, setProfileImg] = useState('');
 
     const getProfileInfo = async () => {
-        const getUser = await getDoc(doc(db, 'users', currentProfile.author))
+        const getUser = await getDoc(doc(db, 'users', id))
         const bio = getUser.data().bio;
         const getBioPic = getUser.data().bioPic;
         const getProfilePic = getUser.data().profilePic;
@@ -35,29 +47,29 @@ export const Profile = (props) => {
             setSearch('');
             getProfileInfo()
         }
-    }, [interaction])
+    }, [interaction, userUpdate])
 
     const follow = async () => {
         if (checkSignIn()) {
-            const followingUser = doc(db, 'users', currentUser)
-            const followedUser = doc(db, 'users', currentProfile.author);
+            const followingUser = doc(db, 'users', currentUser.id)
+            const followedUser = doc(db, 'users', currentProfile.id);
             const followingSnapshot = await getDoc(followingUser);
             
             const following = followingSnapshot.data().following;
 
-            if (following.some(e => e.id === currentProfile.author)) {
+            if (following.some(e => e.id === currentProfile.id)) {
                 await updateDoc(followingUser, {
-                    following: arrayRemove({id: currentProfile.author, name: currentProfile.name})
+                    following: arrayRemove({id: currentProfile.id, name: currentProfile.name})
                 })
                 await updateDoc(followedUser, {
-                    followers: arrayRemove({id: currentUser, name: username()})
+                    followers: arrayRemove({id: currentUser.id, name: username()})
                 })
-            } else if (!following.some(e => e.id === currentProfile.author)) {
+            } else if (!following.some(e => e.id === currentProfile.id)) {
                 await updateDoc(followingUser, {
-                    following: arrayUnion({id: currentProfile.author, name: currentProfile.name})
+                    following: arrayUnion({id: currentProfile.id, name: currentProfile.name})
                 })
                 await updateDoc(followedUser, {
-                    followers: arrayUnion({id: currentUser, name: username()})
+                    followers: arrayUnion({id: currentUser.id, name: username()})
                 })
             }
             setInteraction(true);
@@ -67,7 +79,7 @@ export const Profile = (props) => {
     return (
         <div id='profile'>
             <Header setSearch={setSearch} setSearchMode={setSearchMode} setCurrentProfile={setCurrentProfile} setInteraction={setInteraction} signIn={signIn} logOut={logOut} isUserSignedIn={isUserSignedIn} profilePic={profilePic} username={username} />
-            <ProfileInfo profileImg={profileImg} setProfileImg={setProfileImg} bioPic={bioPic} setBioPic={setBioPic} profileBio={profileBio} setProfileBio={setProfileBio} currentProfile={currentProfile} currentUser={currentUser} follow={follow} followCount={followCount} editMode={editMode} setEditMode={setEditMode} setInteraction={setInteraction} profilePic={profilePic} />
+            <ProfileInfo profileImg={profileImg} setProfileImg={setProfileImg} bioPic={bioPic} setBioPic={setBioPic} profileBio={profileBio} setProfileBio={setProfileBio} currentProfile={currentProfile} currentUser={currentUser} follow={follow} followCount={followCount} editMode={editMode} setEditMode={setEditMode} setInteraction={setInteraction} profilePic={profilePic} setUserUpdate={setUserUpdate} />
             <ProfileNav profileView={profileView} setProfileView={setProfileView} setInteraction={setInteraction} />
             <DisplayTweets setSearchMode={setSearchMode} setSearch={setSearch} draftMode={draftMode} setDraftMode={setDraftMode} currentProfile={currentProfile} setCurrentProfile={setCurrentProfile} uid={uid} checkSignIn={checkSignIn} username={username} profilePic={profilePic} tweets={tweets} setTweets={setTweets} setInteraction={setInteraction} currentUser={currentUser} setProfileView={setProfileView} />
         </div>
@@ -75,29 +87,29 @@ export const Profile = (props) => {
 }
 
 const ProfileInfo = (props) => {
-    const { profilePic, profileBio, setProfileBio, currentProfile, currentUser, follow, followCount, editMode, setEditMode, setInteraction, bioPic, setBioPic, profileImg, setProfileImg } = props
+    const { profilePic, profileBio, setProfileBio, currentProfile, currentUser, follow, followCount, editMode, setEditMode, setInteraction, bioPic, setBioPic, profileImg, setProfileImg, setUserUpdate } = props
     
     const backgroundImage = {
         backgroundImage: `url(${bioPic})`
     }
 
-    if (editMode === false && currentProfile.author === currentUser) {
+    if (editMode === false && currentProfile.id === currentUser.id) {
         return (
             <div id='current-profile'>
                 <div id='edit-profile-btn' onClick={() => setEditMode(true)}>Edit Profile</div>
                 <div style={backgroundImage} id='current-profile-info'>
-                    <img id='current-profile-pic' src={currentProfile.profilePic} alt='current-profile-pic' />
+                    <img id='current-profile-pic' src={profileImg} alt='current-profile-pic' />
                     <div id='current-profile-name'>{currentProfile.name}</div>
                     <div id='profile-bio'>{profileBio}</div>
                 </div>
                 <FollowersSection follow={follow} followCount={followCount} currentProfile={currentProfile} currentUser={currentUser} />
             </div>
         )
-    } else if (editMode === false && currentProfile.author !== currentUser) {
+    } else if (editMode === false && currentProfile.id !== currentUser.id) {
         return (
             <div id='current-profile'>
                 <div id='current-profile-info'>
-                    <img id='current-profile-pic' src={currentProfile.profilePic} alt='current-profile-pic' />
+                    <img id='current-profile-pic' src={profileImg} alt='current-profile-pic' />
                     <div id='current-profile-name'>{currentProfile.name}</div>
                     <div id='profile-bio'>{profileBio}</div>
                 </div>
@@ -108,23 +120,22 @@ const ProfileInfo = (props) => {
         return (
             <div id='current-profile'>
                 <div id='current-profile-info'>
-                    <img id='current-profile-pic' src={currentProfile.profilePic} alt='current-profile-pic' />
                     <div id='current-profile-name'>{currentProfile.name}</div>
                 </div>
                 <FollowersSection follow={follow} followCount={followCount} currentProfile={currentProfile} currentUser={currentUser} />
-                <EditProfile profilePic={profilePic} bioPic={bioPic} setBioPic={setBioPic} profileImg={profileImg} setProfileImg={setProfileImg} profileBio={profileBio} setProfileBio={setProfileBio} setEditMode={setEditMode} setInteraction={setInteraction} currentProfile={currentProfile} />
+                <EditProfile setUserUpdate={setUserUpdate} profilePic={profilePic} bioPic={bioPic} setBioPic={setBioPic} profileImg={profileImg} setProfileImg={setProfileImg} profileBio={profileBio} setProfileBio={setProfileBio} setEditMode={setEditMode} setInteraction={setInteraction} currentProfile={currentProfile} />
             </div>
         )
     }
 }
 
 const EditProfile = (props) => {
-    const { profilePic, setEditMode, setInteraction, currentProfile, profileBio, setProfileBio, bioPic, setBioPic, profileImg, setProfileImg } = props
+    const { profilePic, setEditMode, setInteraction, currentProfile, profileBio, setProfileBio, bioPic, setBioPic, profileImg, setProfileImg, setUserUpdate } = props
 
     const submitEdit = async (e) => {
         const profileImgSelector = document.querySelector(`#profile-pic`).files.length;
         const bioPicSelector = document.querySelector(`#background-img`).files.length
-        const user = doc(db, 'users', currentProfile.author)
+        const user = doc(db, 'users', currentProfile.id)
         if (bioPicSelector > 0) {
             await updateDoc(user, {
                 bioPic: URL.createObjectURL(bioPic)
@@ -140,12 +151,13 @@ const EditProfile = (props) => {
         })
 
         e.preventDefault();
+        setUserUpdate(true);
         setInteraction(true);
         setEditMode(false);
     }
 
     const removeImage = async (icon) => {
-        const user = doc(db, 'users', currentProfile.author)
+        const user = doc(db, 'users', currentProfile.id)
         if (icon === 'background') {
             await updateDoc(user, {
                 bioPic: '',
@@ -193,7 +205,7 @@ const ProfileNav = (props) => {
 const FollowersSection = (props) => {
     const { currentProfile, currentUser, follow, followCount } = props;
 
-    if (currentProfile.author === currentUser) {
+    if (currentProfile.id === currentUser.id) {
         return (
             <div id="followers-section">
                 <div id='followers-info'>

@@ -9,7 +9,7 @@ export const Header = (props) => {
     
     return (
         <div id='header'>
-            <Link to='/'><img onClick={() => {setCurrentProfile(''); setSearchMode(false); setSearch(''); setInteraction(true)}} id='header-logo' alt='main-logo' src={Logo}/></Link>
+            <Link to='/'><img onClick={() => {setInteraction(true); setCurrentProfile(''); setSearchMode(false); setSearch('')}} id='header-logo' alt='main-logo' src={Logo}/></Link>
             <div id='main-title'>Tyler's Twitter</div>
             <Nav currentUser={currentUser} signIn={signIn} logOut={logOut} isUserSignedIn={isUserSignedIn} profilePic={profilePic} username={username} setInteraction={setInteraction} setCurrentProfile={setCurrentProfile} setProfileView={setProfileView} setSearch={setSearch} setSearchMode={setSearchMode} />
         </div>

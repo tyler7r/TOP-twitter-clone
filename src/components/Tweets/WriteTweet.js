@@ -3,10 +3,11 @@ import { db } from '../../firebase';
 import { addDoc, collection, serverTimestamp, updateDoc, doc } from 'firebase/firestore';
 
 export const WriteTweet = (props) => {
-    const { tweets, uid, username, profilePic, setTweets, setInteraction, setDraftMode, draftMode, checkSignIn, searchMode } = props 
+    const { tweets, uid, username, profilePic, setTweets, setInteraction, setDraftMode, draftMode, checkSignIn, searchMode, currentUser } = props 
     const [tweet, setTweet] = useState('');
 
     const submitTweet = async (e, message) => {
+        console.log(currentUser);
         if (message.length === 0) return;
         let copy = [...tweets];
         e.preventDefault();
@@ -16,7 +17,7 @@ export const WriteTweet = (props) => {
                 name: username(),
                 message: message,
                 time: serverTimestamp(),
-                profilePic: profilePic(),
+                profilePic: currentUser.profilePic,
                 likes: [],
                 retweets: [],
                 comments: 0,

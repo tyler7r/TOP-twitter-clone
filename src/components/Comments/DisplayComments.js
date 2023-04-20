@@ -42,7 +42,7 @@ export const DisplayComments = (props) => {
         return (
             <div className='comment-section'>
                 {comments.map(comment => {
-                    if (comment.author === currentUser) {
+                    if (comment.author === currentUser.id) {
                         return (
                             <div key={Math.random()} className='comment'>
                                 <Link to='/profile'><img onClick={() => {setInteraction(true); setCurrentProfile({author: comment.author, name: comment.name, profilePic: comment.profilePic}); setProfileView('tweets'); setSearch(''); setSearchMode(false)}} className='comment-profilePic' src={comment.profilePic} alt='comment-profilePic' /></Link>

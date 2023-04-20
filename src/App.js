@@ -17,12 +17,23 @@ function App() {
   const [profileView, setProfileView] = useState('tweets');
   const [search, setSearch] = useState('')
   const [searchMode, setSearchMode] = useState(false);
-  const [homeView, setHomeView] = useState('all')
+  const [homeView, setHomeView] = useState('all');
+  const [userUpdate, setUserUpdate] = useState(false)
 
   const getTweets = async () => {
     let empty = [];
-    const querySnapshot = await getDocs(collection(db, 'tweets'))
+    const querySnapshot = await getDocs(collection(db, 'tweets'));
+
+    const updateTweets = async(tweet) => {
+      console.log('update run');
+      const user = await getDoc(doc(db, 'users', tweet.data().author))
+      await updateDoc(doc(db, 'tweets', tweet.data().id), {
+        profilePic: user.data().profilePic,
+      })
+    }
+
     querySnapshot.forEach((doc) => {
+      updateTweets(doc);
       empty.push(doc.data());
     })
     setTweets(empty);
@@ -32,25 +43,30 @@ function App() {
   }
 
   useEffect(() => {
+    updateCurrentUser();
     getTweets();
     checkInteractionStatus();
   }, [])
 
   useEffect(() => {
-    checkInteractionStatus();
-    if (interaction === false) return;
+    checkInteractionStatus(); 
+    if (interaction === false) return; 
     else {
-      if (currentProfile !== '') {
-        getUserInteractions(currentProfile.author);
+      updateCurrentUser();
+      if (currentProfile !== '' && userUpdate === false) {
+        getUserInteractions(currentProfile.id);
       } else if (searchMode === true) {
         getSearchResults(search)
       } else if (homeView === 'following') {
         getFollowingView();
+      } else if (currentProfile !== '' && userUpdate === true) {
+        getTweets();
+        getUserInteractions(currentProfile.id)
       } else {
         getTweets();
       }
     }
-  }, [interaction, currentProfile, searchMode, homeView]);
+  }, [interaction, currentProfile, searchMode, homeView, userUpdate]);
 
   const signIn = async () => {
     const provider = new GoogleAuthProvider();
@@ -72,8 +88,7 @@ function App() {
   }
 
   const getProfilePic = () => {
-    if (signedIn === true) return getAuth().currentUser.photoURL;
-    else return Logo;
+    return getAuth().currentUser.photoURL;
   }
 
   const checkSignIn = () => {
@@ -100,16 +115,38 @@ function App() {
         followers: [],
         following: [],
         profilePic: getProfilePic(),
-        bioPic: getProfilePic(),
+        bioPic: '',
         bio: '',
       })
+      setCurrentUser({
+        name: getUserName(),
+        id: getUID(),
+        likes: [],
+        retweets: [],
+        tweets: [],
+        followers: [],
+        following: [],
+        profilePic: getProfilePic(),
+        bioPic: '',
+        bio: '',
+      })
+    } else {
+      setCurrentUser(docSnap.data());
     }
-    setCurrentUser(getUID());
+  }
+
+  const updateCurrentUser = async () => {
+    if (currentUser !== '') {
+      const user = await getDoc(doc(db, 'users', currentUser.id))
+      setCurrentUser(user.data());
+      setUserUpdate(false);
+    }
   }
 
   const getUserInteractions = async (author) => {
     let empty = [];
     const user = doc(db, 'users', author)
+    const getUser = await getDoc(user);
     const tweets = await getDocs(collection(db, 'tweets'))
     tweets.forEach((tweet) => {
       if (tweet.data().likes.includes(author)) {
@@ -117,12 +154,12 @@ function App() {
           likes: arrayUnion(tweet.data())
         })
         if (profileView === 'likes') {
-          empty.push(tweet.data());
+          empty.push(tweet.data().id);
         }
       }
       if (tweet.data().retweets.includes(author)) {
         updateDoc(user, {
-          retweets: arrayUnion(tweet.data())
+          retweets: arrayUnion(tweet.data().id)
         })
         if (profileView === 'retweets') {
           empty.push(tweet.data())
@@ -151,12 +188,12 @@ function App() {
       const retweet = document.querySelector(`#id${tweets[i].id}.retweet-btn`)
       if (like === null) continue;
       if (currentUser !== '') {
-        if (getTweet.data().likes.includes(currentUser)) {
+        if (getTweet.data().likes.includes(currentUser.id)) {
           like.classList.add('liked')
         } else {
           like.classList.remove('liked')
         }
-        if (getTweet.data().retweets.includes(currentUser)) {
+        if (getTweet.data().retweets.includes(currentUser.id)) {
           retweet.classList.add('retweeted')
         } else {
           retweet.classList.remove('retweeted')
@@ -179,7 +216,7 @@ function App() {
 
   const getFollowingView = async () => {
     let empty = [];
-    let getFollowedUsers = await getDoc(doc(db, 'users', currentUser));
+    let getFollowedUsers = await getDoc(doc(db, 'users', currentUser.id));
     let followedUsers = getFollowedUsers.data().following;
     for (let i = 0; i < followedUsers.length; i++) {
       let getUser = await getDoc(doc(db, 'users', followedUsers[i]))
@@ -198,7 +235,8 @@ function App() {
       <div className="App">
         <Routes>
           <Route path='/' element={<Home setSearchMode={setSearchMode} searchMode={searchMode} search={search} setSearch={setSearch} setProfileView={setProfileView} currentProfile={currentProfile} setCurrentProfile={setCurrentProfile} currentUser={currentUser} checkSignIn={checkSignIn} signIn={signIn} isUserSignedIn={signedIn} logOut={logOutUser} profilePic={getProfilePic} username={getUserName} uid={getUID} tweets={tweets} setTweets={setTweets} setInteraction={setInteraction} setHomeView={setHomeView} />} />
-          <Route path='/profile' element={<Profile setSearchMode={setSearchMode} search={search} setSearch={setSearch} profileView={profileView} setProfileView={setProfileView} currentProfile={currentProfile} setCurrentProfile={setCurrentProfile} currentUser={currentUser} checkSignIn={checkSignIn} signIn={signIn} isUserSignedIn={signedIn} logOut={logOutUser} profilePic={getProfilePic} username={getUserName} uid={getUID} tweets={tweets} setTweets={setTweets} setInteraction={setInteraction} interaction={interaction} setHomeView={setHomeView} />} />
+          {/* <Route path='/profile' element={<Profile userUpdate={userUpdate} setUserUpdate={setUserUpdate} setSearchMode={setSearchMode} search={search} setSearch={setSearch} profileView={profileView} setProfileView={setProfileView} currentProfile={currentProfile} setCurrentProfile={setCurrentProfile} currentUser={currentUser} checkSignIn={checkSignIn} signIn={signIn} isUserSignedIn={signedIn} logOut={logOutUser} profilePic={getProfilePic} username={getUserName} uid={getUID} tweets={tweets} setTweets={setTweets} setInteraction={setInteraction} interaction={interaction} setHomeView={setHomeView} />} /> */}
+          <Route path='/profile/:id' element={<Profile userUpdate={userUpdate} setUserUpdate={setUserUpdate} setSearchMode={setSearchMode} search={search} setSearch={setSearch} profileView={profileView} setProfileView={setProfileView} currentProfile={currentProfile} setCurrentProfile={setCurrentProfile} currentUser={currentUser} checkSignIn={checkSignIn} signIn={signIn} isUserSignedIn={signedIn} logOut={logOutUser} profilePic={getProfilePic} username={getUserName} uid={getUID} tweets={tweets} setTweets={setTweets} setInteraction={setInteraction} interaction={interaction} setHomeView={setHomeView} />} />
         </Routes>
       </div>
     </HashRouter>

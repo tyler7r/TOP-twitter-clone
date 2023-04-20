@@ -15,7 +15,6 @@ export const Nav = (props) => {
     } else {
         return (
             <div id='main-nav'>
-                <img id='profile-icon' src={profilePic()} alt='profile-pic' />
                 <div id='sign-in-button' onClick={() => signIn()}>Sign In</div>
             </div>
         )

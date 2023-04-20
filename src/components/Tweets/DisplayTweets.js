@@ -24,13 +24,13 @@ export const DisplayTweets = (props) => {
             const snapshot = await getDoc(tweet);
             const likes = snapshot.data().likes
 
-            if (likes.includes(currentUser)) {
+            if (likes.includes(currentUser.id)) {
                 await updateDoc(tweet, {
-                    likes: arrayRemove(currentUser)
+                    likes: arrayRemove(currentUser.id)
                 })
             } else {
                 await updateDoc(tweet, {
-                    likes: arrayUnion(currentUser),
+                    likes: arrayUnion(currentUser.id),
                 })
             }
             setInteraction(true);
@@ -44,13 +44,13 @@ export const DisplayTweets = (props) => {
             const snapshot = await getDoc(docRef);
             const retweets = snapshot.data().retweets;
 
-            if (retweets.includes(currentUser)) {
+            if (retweets.includes(currentUser.id)) {
                 await updateDoc(docRef, {
-                    retweets: arrayRemove(currentUser)
+                    retweets: arrayRemove(currentUser.id)
                 })
             } else {
                 await updateDoc(docRef, {
-                    retweets: arrayUnion(currentUser),
+                    retweets: arrayUnion(currentUser.id),
                 })
             }
             setInteraction(true);
@@ -101,7 +101,7 @@ export const DisplayTweets = (props) => {
             let like = document.querySelector(`#cmt${comments[i].id}`);
             if (cmt.data() === undefined) continue
             if (like === null) continue
-            if (cmt.data().likes.includes(currentUser)) {
+            if (cmt.data().likes.includes(currentUser.id)) {
                 like.classList.add('liked')
             } else {
                 like.classList.remove('liked');
@@ -112,7 +112,7 @@ export const DisplayTweets = (props) => {
     const deleteTweet = async (e) => {
         if (checkSignIn()) {
             const getTweet = await getDoc(doc(db, 'tweets', e.target.id));
-            if (getTweet.data().author === currentUser) {
+            if (getTweet.data().author === currentUser.id) {
                 await deleteDoc(doc(db, 'tweets', e.target.id))
             }
             setInteraction(true);
@@ -125,12 +125,12 @@ export const DisplayTweets = (props) => {
         return (
             <div id='feed'>
                 {tweets.map(tweet => {
-                    if (tweet.author === currentUser) {
+                    if (tweet.author === currentUser.id) {
                         return (
                             <div key={tweet.id} className='tweet'>
-                                <Link className='profile-pic-link' to='/profile'><img onClick={() => {setInteraction(true); setCurrentProfile({author: tweet.author, name: tweet.name, profilePic: tweet.profilePic }); setProfileView('tweets')}} className='tweet-profilePic' src={tweet.profilePic} alt='tweet-profilePic' /></Link>
+                                <Link className='profile-pic-link' to={'/profile/' + tweet.author}><img onClick={() => {setInteraction(true); setCurrentProfile({id: tweet.author}); setProfileView('tweets')}} className='tweet-profilePic' src={tweet.profilePic} alt='tweet-profilePic' /></Link>
                                 <div id={tweet.id} className="tweet-details">
-                                    <Link to='/profile' className='tweet-name'><div id={tweet.id} onClick={() => {setInteraction(true); setCurrentProfile({author: tweet.author, name: tweet.name, profilePic: tweet.profilePic })}}>{tweet.name}</div></Link>
+                                    <Link to={'/profile/' + tweet.author} className='tweet-name'><div id={tweet.id} onClick={() => {setInteraction(true); setCurrentProfile({id: tweet.author})}}>{tweet.name}</div></Link>
                                     <div id={tweet.id} className='tweet-message' onClick={() => {getComments(tweet.id); checkCommentInteractionStatus(tweet.id)}}>{tweet.message}</div>
                                     <div id={tweet.id} className="interaction-btns-container">
                                         <div className="interaction-btns">
@@ -159,9 +159,9 @@ export const DisplayTweets = (props) => {
                     } else {
                     return (
                         <div key={tweet.id} className='tweet'>
-                            <Link to='/profile'><img onClick={() => {setInteraction(true); setCurrentProfile({author: tweet.author, name: tweet.name, profilePic: tweet.profilePic}); setProfileView('tweets'); setSearch(''); setSearchMode(false)}} className='tweet-profilePic' src={tweet.profilePic} alt='tweet-profilePic' /></Link>
+                            <Link className='profile-pic-link' to={'/profile/' + tweet.author}><img onClick={() => {setInteraction(true); setCurrentProfile({id: tweet.author}); setProfileView('tweets')}} className='tweet-profilePic' src={tweet.profilePic} alt='tweet-profilePic' /></Link>
                             <div id={tweet.id} className="tweet-details">
-                                <Link to='/profile' className='tweet-name'><div id={tweet.id} onClick={() => {setInteraction(true); setCurrentProfile({author: tweet.author, name: tweet.name, profilePic: tweet.profilePic })}}>{tweet.name}</div></Link>
+                            <Link to={'/profile/' + tweet.author} className='tweet-name'><div id={tweet.id} onClick={() => {setInteraction(true); setCurrentProfile({id: tweet.author})}}>{tweet.name}</div></Link>
                                 <div id={tweet.id} className='tweet-message' onClick={() => {getComments(tweet.id); checkCommentInteractionStatus(tweet.id)}}>{tweet.message}</div>
                                 <div id={tweet.id} className="interaction-btns-container">
                                     <div className="interaction-btns">
