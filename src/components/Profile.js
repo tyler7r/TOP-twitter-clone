@@ -18,6 +18,7 @@ export const Profile = (props) => {
             setCurrentProfile(getUser.data());
         }
         getProfile();
+        getProfileInfo();
     }, [])
 
     const [draftMode, setDraftMode] = useState(false);
