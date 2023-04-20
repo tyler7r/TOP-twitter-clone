@@ -4,6 +4,8 @@ import { Header } from './Header';
 import { DisplayTweets } from './Tweets/DisplayTweets';
 import { getDoc, doc, updateDoc, arrayRemove, arrayUnion } from 'firebase/firestore';
 import { db } from '../firebase';
+import { storage } from '../firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import '../styles/profile.css'
 
 export const Profile = (props) => {
@@ -11,22 +13,19 @@ export const Profile = (props) => {
 
     const { userUpdate, setUserUpdate, setCurrentProfile, setSearchMode, setSearch, signIn, logOut, isUserSignedIn, profilePic, username, setProfileView, setInteraction, currentProfile, profileView, uid, checkSignIn, currentUser, tweets, setTweets, interaction, setHomeView } = props;
 
-    useEffect(() => {
-        const getProfile = async () => {
-            const getUser = await getDoc(doc(db, 'users', id))
-            console.log(getUser.data());
-            setCurrentProfile(getUser.data());
-        }
-        getProfile();
-        getProfileInfo();
-    }, [])
-
     const [draftMode, setDraftMode] = useState(false);
     const [followCount, setFollowCount] = useState({})
     const [editMode, setEditMode] = useState(false);
     const [profileBio, setProfileBio] = useState('');
-    const [bioPic, setBioPic] = useState('');
-    const [profileImg, setProfileImg] = useState('');
+    const [bioPic, setBioPic] = useState(null);
+    const [profileImg, setProfileImg] = useState(null);
+    const [profileURL, setProfileURL] = useState(null);
+    const [backgroundURL, setBackgroundURL] = useState(null);
+
+    const getProfile = async () => {
+        const getUser = await getDoc(doc(db, 'users', id))
+        setCurrentProfile(getUser.data());
+    }
 
     const getProfileInfo = async () => {
         const getUser = await getDoc(doc(db, 'users', id))
@@ -42,13 +41,19 @@ export const Profile = (props) => {
     }
 
     useEffect(() => {
+        getProfile();
+        getProfileInfo();
+    }, [])
+
+    useEffect(() => {
         if (interaction === true) {
             setHomeView('all');
             setSearchMode(false);
             setSearch('');
+            getProfile();
             getProfileInfo()
         }
-    }, [interaction, userUpdate])
+    }, [interaction, userUpdate, currentProfile])
 
     const follow = async () => {
         if (checkSignIn()) {
@@ -80,7 +85,7 @@ export const Profile = (props) => {
     return (
         <div id='profile'>
             <Header setSearch={setSearch} setSearchMode={setSearchMode} setCurrentProfile={setCurrentProfile} setInteraction={setInteraction} signIn={signIn} logOut={logOut} isUserSignedIn={isUserSignedIn} profilePic={profilePic} username={username} />
-            <ProfileInfo profileImg={profileImg} setProfileImg={setProfileImg} bioPic={bioPic} setBioPic={setBioPic} profileBio={profileBio} setProfileBio={setProfileBio} currentProfile={currentProfile} currentUser={currentUser} follow={follow} followCount={followCount} editMode={editMode} setEditMode={setEditMode} setInteraction={setInteraction} profilePic={profilePic} setUserUpdate={setUserUpdate} />
+            <ProfileInfo backgroundURL={backgroundURL} setBackgroundURL={setBackgroundURL} profileURL={profileURL} setProfileURL={setProfileURL} profileImg={profileImg} setProfileImg={setProfileImg} bioPic={bioPic} setBioPic={setBioPic} profileBio={profileBio} setProfileBio={setProfileBio} currentProfile={currentProfile} setCurrentProfile={setCurrentProfile} currentUser={currentUser} follow={follow} followCount={followCount} editMode={editMode} setEditMode={setEditMode} setInteraction={setInteraction} profilePic={profilePic} setUserUpdate={setUserUpdate} />
             <ProfileNav profileView={profileView} setProfileView={setProfileView} setInteraction={setInteraction} />
             <DisplayTweets setSearchMode={setSearchMode} setSearch={setSearch} draftMode={draftMode} setDraftMode={setDraftMode} currentProfile={currentProfile} setCurrentProfile={setCurrentProfile} uid={uid} checkSignIn={checkSignIn} username={username} profilePic={profilePic} tweets={tweets} setTweets={setTweets} setInteraction={setInteraction} currentUser={currentUser} setProfileView={setProfileView} />
         </div>
@@ -88,10 +93,10 @@ export const Profile = (props) => {
 }
 
 const ProfileInfo = (props) => {
-    const { profilePic, profileBio, setProfileBio, currentProfile, currentUser, follow, followCount, editMode, setEditMode, setInteraction, bioPic, setBioPic, profileImg, setProfileImg, setUserUpdate } = props
+    const { setCurrentProfile, backgroundURL, setBackgroundURL, profileURL, setProfileURL, profilePic, profileBio, setProfileBio, currentProfile, currentUser, follow, followCount, editMode, setEditMode, setInteraction, bioPic, setBioPic, profileImg, setProfileImg, setUserUpdate } = props
     
     const backgroundImage = {
-        backgroundImage: `url(${bioPic})`
+        backgroundImage: `url(${currentProfile.bioPic})`
     }
 
     if (editMode === false && currentProfile.id === currentUser.id) {
@@ -124,34 +129,73 @@ const ProfileInfo = (props) => {
                     <div id='current-profile-name'>{currentProfile.name}</div>
                 </div>
                 <FollowersSection follow={follow} followCount={followCount} currentProfile={currentProfile} currentUser={currentUser} />
-                <EditProfile setUserUpdate={setUserUpdate} profilePic={profilePic} bioPic={bioPic} setBioPic={setBioPic} profileImg={profileImg} setProfileImg={setProfileImg} profileBio={profileBio} setProfileBio={setProfileBio} setEditMode={setEditMode} setInteraction={setInteraction} currentProfile={currentProfile} />
+                <EditProfile setCurrentProfile={setCurrentProfile} backgroundURL={backgroundURL} setBackgroundURL={setBackgroundURL} profileURL={profileURL} setProfileURL={setProfileURL} setUserUpdate={setUserUpdate} profilePic={profilePic} bioPic={bioPic} setBioPic={setBioPic} profileImg={profileImg} setProfileImg={setProfileImg} profileBio={profileBio} setProfileBio={setProfileBio} setEditMode={setEditMode} setInteraction={setInteraction} currentProfile={currentProfile} />
             </div>
         )
     }
 }
 
 const EditProfile = (props) => {
-    const { profilePic, setEditMode, setInteraction, currentProfile, profileBio, setProfileBio, bioPic, setBioPic, profileImg, setProfileImg, setUserUpdate } = props
+    const { setCurrentProfile, setBackgroundURL, setProfileURL, profilePic, setEditMode, setInteraction, currentProfile, profileBio, setProfileBio, bioPic, setBioPic, profileImg, setProfileImg, setUserUpdate } = props
+
+    const uploadImage = () => {
+        const user = doc(db, 'users', currentProfile.id);
+        const pImg = document.querySelector(`#profile-pic`).files.length;
+        const bImg = document.querySelector(`#background-img`).files.length;
+        if (pImg === 0 && bImg === 0) return;
+        else if (pImg > 0 && bImg === 0) {
+            const imageRef = ref(storage, `profilePics/${currentProfile.id}`);
+            uploadBytes(imageRef, profileImg).then(() => {
+                getDownloadURL(imageRef).then((url) => {
+                    setProfileURL(url)
+                    setCurrentProfile({...currentProfile, profilePic: url})
+                    updateDoc(user, {
+                        profilePic: url,
+                    })
+                })
+            })
+            setProfileImg(null)
+        } else if (bImg > 0 && pImg === 0) {
+            const imageRef = ref(storage, `backgroundPics/${currentProfile.id}`);
+            uploadBytes(imageRef, bioPic).then(() => {
+                getDownloadURL(imageRef).then((url) => {
+                    setBackgroundURL(url)
+                    setCurrentProfile({...currentProfile, bioPic: url})
+                    updateDoc(user, {
+                        bioPic: url,
+                    })
+                })
+            })
+            setBioPic(null)
+        } else if (pImg > 0 && bImg > 0) {
+            const profileRef = ref(storage, `profilePics/${currentProfile.id}`);
+            uploadBytes(profileRef, profileImg).then(() => {
+                getDownloadURL(profileRef).then((url) => {
+                    setProfileURL(url)
+                    setCurrentProfile({...currentProfile, profilePic: url})
+                    updateDoc(user, {
+                        profilePic: url,
+                    })
+                })
+            })
+            setProfileImg(null)
+            const imageRef = ref(storage, `backgroundPics/${currentProfile.id}`);
+            uploadBytes(imageRef, bioPic).then(() => {
+                getDownloadURL(imageRef).then((url) => {
+                    setBackgroundURL(url)
+                    setCurrentProfile({...currentProfile, bioPic: url})
+                    updateDoc(user, {
+                        bioPic: url,
+                    })
+                })
+            })
+            setBioPic(null)
+        }
+    }
 
     const submitEdit = async (e) => {
-        const profileImgSelector = document.querySelector(`#profile-pic`).files.length;
-        const bioPicSelector = document.querySelector(`#background-img`).files.length
-        const user = doc(db, 'users', currentProfile.id)
-        if (bioPicSelector > 0) {
-            await updateDoc(user, {
-                bioPic: URL.createObjectURL(bioPic)
-            })
-        }
-        if (profileImgSelector > 0) {
-            await updateDoc(user, {
-                profilePic: URL.createObjectURL(profileImg)
-            })
-        }
-        await updateDoc(user, {
-            bio: profileBio,
-        })
-
         e.preventDefault();
+        uploadImage();
         setUserUpdate(true);
         setInteraction(true);
         setEditMode(false);
@@ -161,12 +205,14 @@ const EditProfile = (props) => {
         const user = doc(db, 'users', currentProfile.id)
         if (icon === 'background') {
             await updateDoc(user, {
-                bioPic: '',
+                bioPic: null,
             })
+            setCurrentProfile({...currentProfile, bioPic: null})
         } else if (icon === 'profile') {
             await updateDoc(user, {
                 profilePic: profilePic(),
             })
+            setCurrentProfile({...currentProfile, profilePic: profilePic()});
         }
     }
 

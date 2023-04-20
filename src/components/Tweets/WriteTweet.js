@@ -7,7 +7,6 @@ export const WriteTweet = (props) => {
     const [tweet, setTweet] = useState('');
 
     const submitTweet = async (e, message) => {
-        console.log(currentUser);
         if (message.length === 0) return;
         let copy = [...tweets];
         e.preventDefault();
@@ -17,7 +16,7 @@ export const WriteTweet = (props) => {
                 name: username(),
                 message: message,
                 time: serverTimestamp(),
-                profilePic: currentUser.profilePic,
+                profilePic: profilePic(),
                 likes: [],
                 retweets: [],
                 comments: 0,

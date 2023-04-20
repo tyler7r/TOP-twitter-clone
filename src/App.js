@@ -25,7 +25,6 @@ function App() {
     const querySnapshot = await getDocs(collection(db, 'tweets'));
 
     const updateTweets = async(tweet) => {
-      console.log('update run');
       const user = await getDoc(doc(db, 'users', tweet.data().author))
       await updateDoc(doc(db, 'tweets', tweet.data().id), {
         profilePic: user.data().profilePic,
@@ -49,10 +48,10 @@ function App() {
   }, [])
 
   useEffect(() => {
-    checkInteractionStatus(); 
     if (interaction === false) return; 
     else {
       updateCurrentUser();
+      checkInteractionStatus();
       if (currentProfile !== '' && userUpdate === false) {
         getUserInteractions(currentProfile.id);
       } else if (searchMode === true) {
@@ -187,7 +186,7 @@ function App() {
       const like = document.querySelector(`#id${tweets[i].id}.like-btn`)
       const retweet = document.querySelector(`#id${tweets[i].id}.retweet-btn`)
       if (like === null) continue;
-      if (currentUser !== '') {
+      if (currentUser !== '' && getTweet.exists()) {
         if (getTweet.data().likes.includes(currentUser.id)) {
           like.classList.add('liked')
         } else {

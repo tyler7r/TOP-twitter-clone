@@ -10,7 +10,7 @@ import CommentIcon from '../../images/comment.svg';
 import '../../styles/tweet.css'
 
 export const DisplayTweets = (props) => {
-    const { tweets, setInteraction, currentUser, setCurrentProfile, setSearch, setSearchMode, setProfileView, checkSignIn, username, setTweets, uid } = props;
+    const { currentProfile, tweets, setInteraction, currentUser, setCurrentProfile, setSearch, setSearchMode, setProfileView, checkSignIn, username, setTweets, uid } = props;
 
     const [commentMode, setCommentMode] = useState({open: false, id: ''});
     const [openTweet, setOpenTweet] = useState({open: false, id: ''});
@@ -128,9 +128,9 @@ export const DisplayTweets = (props) => {
                     if (tweet.author === currentUser.id) {
                         return (
                             <div key={tweet.id} className='tweet'>
-                                <Link className='profile-pic-link' to={'/profile/' + tweet.author}><img onClick={() => {setInteraction(true); setCurrentProfile({id: tweet.author}); setProfileView('tweets')}} className='tweet-profilePic' src={tweet.profilePic} alt='tweet-profilePic' /></Link>
+                                <Link className='profile-pic-link' to={'/profile/' + tweet.author}><img onClick={() => {setInteraction(true); setProfileView('tweets')}} className='tweet-profilePic' src={tweet.profilePic} alt='tweet-profilePic' /></Link>
                                 <div id={tweet.id} className="tweet-details">
-                                    <Link to={'/profile/' + tweet.author} className='tweet-name'><div id={tweet.id} onClick={() => {setInteraction(true); setCurrentProfile({id: tweet.author})}}>{tweet.name}</div></Link>
+                                    <Link to={'/profile/' + tweet.author} className='tweet-name'><div id={tweet.id} onClick={() => {setInteraction(true)}}>{tweet.name}</div></Link>
                                     <div id={tweet.id} className='tweet-message' onClick={() => {getComments(tweet.id); checkCommentInteractionStatus(tweet.id)}}>{tweet.message}</div>
                                     <div id={tweet.id} className="interaction-btns-container">
                                         <div className="interaction-btns">
@@ -159,9 +159,9 @@ export const DisplayTweets = (props) => {
                     } else {
                     return (
                         <div key={tweet.id} className='tweet'>
-                            <Link className='profile-pic-link' to={'/profile/' + tweet.author}><img onClick={() => {setInteraction(true); setCurrentProfile({id: tweet.author}); setProfileView('tweets')}} className='tweet-profilePic' src={tweet.profilePic} alt='tweet-profilePic' /></Link>
+                            <Link className='profile-pic-link' to={'/profile/' + tweet.author}><img onClick={() => {setInteraction(true); setProfileView('tweets')}} className='tweet-profilePic' src={tweet.profilePic} alt='tweet-profilePic' /></Link>
                             <div id={tweet.id} className="tweet-details">
-                            <Link to={'/profile/' + tweet.author} className='tweet-name'><div id={tweet.id} onClick={() => {setInteraction(true); setCurrentProfile({id: tweet.author})}}>{tweet.name}</div></Link>
+                            <Link to={'/profile/' + tweet.author} className='tweet-name'><div id={tweet.id} onClick={() => {setInteraction(true)}}>{tweet.name}</div></Link>
                                 <div id={tweet.id} className='tweet-message' onClick={() => {getComments(tweet.id); checkCommentInteractionStatus(tweet.id)}}>{tweet.message}</div>
                                 <div id={tweet.id} className="interaction-btns-container">
                                     <div className="interaction-btns">

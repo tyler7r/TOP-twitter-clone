@@ -46,7 +46,7 @@ export const DisplayComments = (props) => {
                     if (comment.author === currentUser.id) {
                         return (
                             <div key={Math.random()} className='comment'>
-                                <Link to='/profile'><img onClick={() => {setInteraction(true); setCurrentProfile({author: comment.author, name: comment.name, profilePic: comment.profilePic}); setProfileView('tweets'); setSearch(''); setSearchMode(false)}} className='comment-profilePic' src={comment.profilePic} alt='comment-profilePic' /></Link>
+                                <Link to='/profile'><img onClick={() => {setInteraction(true); setProfileView('tweets'); setSearch(''); setSearchMode(false)}} className='comment-profilePic' src={comment.profilePic} alt='comment-profilePic' /></Link>
                                 <div className="comment-details">
                                     <div id={comment.id} className='comment-name'>{comment.name}</div>
                                     <div className='comment-message'>{comment.message}</div>
@@ -61,7 +61,7 @@ export const DisplayComments = (props) => {
                     } else {
                         return (
                             <div key={Math.random()} className='comment'>
-                                <Link to='/profile'><img onClick={() => {setInteraction(true); setCurrentProfile({author: comment.author, name: comment.name, profilePic: comment.profilePic}); setProfileView('tweets'); setSearch(''); setSearchMode(false)}} className='comment-profilePic' src={comment.profilePic} alt='comment-profilePic' /></Link>
+                                <Link to='/profile'><img onClick={() => {setInteraction(true); setProfileView('tweets'); setSearch(''); setSearchMode(false)}} className='comment-profilePic' src={comment.profilePic} alt='comment-profilePic' /></Link>
                                 <div className="comment-details">
                                     <div id={comment.id} className='comment-name'>{comment.name}</div>
                                     <div className='comment-message'>{comment.message}</div>
