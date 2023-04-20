@@ -17,16 +17,17 @@ export const DisplayComments = (props) => {
         const docRef = doc(db, 'tweets', tweetId, 'comments', cmtId);
         const snapshot = await getDoc(docRef);
         const likes = snapshot.data().likes
-        if (likes.includes(uid())) {
+        if (likes.includes(currentUser.id)) {
             await updateDoc(docRef, {
-                likes: arrayRemove(uid())
+                likes: arrayRemove(currentUser.id)
             })
         } else {
             await updateDoc(docRef, {
-                likes: arrayUnion(uid()),
+                likes: arrayUnion(currentUser.id),
             })
         }
         retrieveComments(tweetId);
+        checkLike(tweetId);
     }
 
     const deleteComment = async (e) => {

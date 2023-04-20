@@ -109,7 +109,7 @@ const ProfileInfo = (props) => {
     } else if (editMode === false && currentProfile.id !== currentUser.id) {
         return (
             <div id='current-profile'>
-                <div id='current-profile-info'>
+                <div style={backgroundImage} id='current-profile-info'>
                     <img id='current-profile-pic' src={profileImg} alt='current-profile-pic' />
                     <div id='current-profile-name'>{currentProfile.name}</div>
                     <div id='profile-bio'>{profileBio}</div>

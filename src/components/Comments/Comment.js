@@ -3,7 +3,7 @@ import { addDoc, collection, serverTimestamp, updateDoc, doc } from 'firebase/fi
 import { db } from '../../firebase';
 
 export const Comment = (props) => {
-    const { uid, username, tweetId, tweets, profilePic, setTweets, setNewComment, comment, commentMode, setCommentMode, setInteraction, retrieveComments} = props
+    const { uid, username, tweetId, tweets, profilePic, setTweets, setNewComment, comment, commentMode, setCommentMode, setInteraction, retrieveComments, currentUser } = props
     const [commentMsg, setCommentMsg] = useState('');
 
     const submitComment = async (e, message) => {
@@ -15,7 +15,7 @@ export const Comment = (props) => {
                 name: username(),
                 message: message,
                 time: serverTimestamp(),
-                profilePic: profilePic(),
+                profilePic: currentUser.profilePic,
                 likes: [],
             })
             await updateDoc(doc(db, 'tweets', tweetId, 'comments', newComment.id), {

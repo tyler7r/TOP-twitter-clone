@@ -154,12 +154,12 @@ function App() {
           likes: arrayUnion(tweet.data())
         })
         if (profileView === 'likes') {
-          empty.push(tweet.data().id);
+          empty.push(tweet.data());
         }
       }
       if (tweet.data().retweets.includes(author)) {
         updateDoc(user, {
-          retweets: arrayUnion(tweet.data().id)
+          retweets: arrayUnion(tweet.data())
         })
         if (profileView === 'retweets') {
           empty.push(tweet.data())
@@ -167,7 +167,7 @@ function App() {
       }
       if (tweet.data().author === author) {
         updateDoc(user, {
-          tweets: arrayUnion(tweet.data())
+          tweets: arrayUnion(tweet.data().id)
         })
         if (profileView === 'tweets') {
           empty.push(tweet.data())

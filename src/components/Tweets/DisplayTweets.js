@@ -152,7 +152,7 @@ export const DisplayTweets = (props) => {
                                         <div className="tweet-time-details">{tweet.time.toDate().toLocaleTimeString(navigator.language, {hour: '2-digit', minute: '2-digit'})}</div>
                                     </div>
                                 </div>
-                                <Comment retrieveComments={retrieveComments} setNewComment={setNewComment} comment={comment} username={username} commentMode={commentMode} setCommentMode={setCommentMode} tweetId={tweet.id} tweets={tweets} setTweets={setTweets} setInteraction={setInteraction} uid={uid} />
+                                <Comment retrieveComments={retrieveComments} setNewComment={setNewComment} comment={comment} username={username} commentMode={commentMode} setCommentMode={setCommentMode} tweetId={tweet.id} tweets={tweets} setTweets={setTweets} setInteraction={setInteraction} uid={uid} currentUser={currentUser} />
                                 <DisplayComments checkLike={checkCommentInteractionStatus} currentUser={currentUser} retrieveComments={retrieveComments} checkSignIn={checkSignIn} comments={comments} openTweet={openTweet} tweetId={tweet.id} uid={uid} comment={comment} setInteraction={setInteraction} setCurrentProfile={setCurrentProfile} setSearchMode={setSearchMode} setSearch={setSearch} setProfileView={setProfileView} />
                             </div>
                         )
@@ -182,7 +182,7 @@ export const DisplayTweets = (props) => {
                                     <div className="tweet-time-details">{tweet.time.toDate().toLocaleTimeString(navigator.language, {hour: '2-digit', minute: '2-digit'})}</div>
                                 </div>
                             </div>
-                            <Comment retrieveComments={retrieveComments} setNewComment={setNewComment} comment={comment} username={username} commentMode={commentMode} setCommentMode={setCommentMode} tweetId={tweet.id} tweets={tweets} setTweets={setTweets} setInteraction={setInteraction} uid={uid} />
+                            <Comment retrieveComments={retrieveComments} setNewComment={setNewComment} comment={comment} username={username} commentMode={commentMode} setCommentMode={setCommentMode} tweetId={tweet.id} tweets={tweets} setTweets={setTweets} setInteraction={setInteraction} uid={uid} currentUser={currentUser} />
                             <DisplayComments checkLike={checkCommentInteractionStatus} currentUser={currentUser} retrieveComments={retrieveComments} checkSignIn={checkSignIn} comments={comments} openTweet={openTweet} tweetId={tweet.id} uid={uid} comment={comment} setInteraction={setInteraction} setCurrentProfile={setCurrentProfile} setSearchMode={setSearchMode} setSearch={setSearch} setProfileView={setProfileView} />
                         </div>
                     )
