@@ -219,10 +219,10 @@ function App() {
     let getFollowedUsers = await getDoc(doc(db, 'users', currentUser.id));
     let followedUsers = getFollowedUsers.data().following;
     for (let i = 0; i < followedUsers.length; i++) {
-      let getUser = await getDoc(doc(db, 'users', followedUsers[i]))
+      let getUser = await getDoc(doc(db, 'users', followedUsers[i].id))
       let userTweets = getUser.data().tweets
       for (let j = 0; j < userTweets.length; j++) {
-        let getTweet = await getDoc(doc(db, 'tweets', userTweets[j].id))
+        let getTweet = await getDoc(doc(db, 'tweets', userTweets[j]))
         empty.push(getTweet.data())
       }
     }
@@ -235,7 +235,6 @@ function App() {
       <div className="App">
         <Routes>
           <Route path='/' element={<Home setSearchMode={setSearchMode} searchMode={searchMode} search={search} setSearch={setSearch} setProfileView={setProfileView} currentProfile={currentProfile} setCurrentProfile={setCurrentProfile} currentUser={currentUser} checkSignIn={checkSignIn} signIn={signIn} isUserSignedIn={signedIn} logOut={logOutUser} profilePic={getProfilePic} username={getUserName} uid={getUID} tweets={tweets} setTweets={setTweets} setInteraction={setInteraction} setHomeView={setHomeView} />} />
-          {/* <Route path='/profile' element={<Profile userUpdate={userUpdate} setUserUpdate={setUserUpdate} setSearchMode={setSearchMode} search={search} setSearch={setSearch} profileView={profileView} setProfileView={setProfileView} currentProfile={currentProfile} setCurrentProfile={setCurrentProfile} currentUser={currentUser} checkSignIn={checkSignIn} signIn={signIn} isUserSignedIn={signedIn} logOut={logOutUser} profilePic={getProfilePic} username={getUserName} uid={getUID} tweets={tweets} setTweets={setTweets} setInteraction={setInteraction} interaction={interaction} setHomeView={setHomeView} />} /> */}
           <Route path='/profile/:id' element={<Profile userUpdate={userUpdate} setUserUpdate={setUserUpdate} setSearchMode={setSearchMode} search={search} setSearch={setSearch} profileView={profileView} setProfileView={setProfileView} currentProfile={currentProfile} setCurrentProfile={setCurrentProfile} currentUser={currentUser} checkSignIn={checkSignIn} signIn={signIn} isUserSignedIn={signedIn} logOut={logOutUser} profilePic={getProfilePic} username={getUserName} uid={getUID} tweets={tweets} setTweets={setTweets} setInteraction={setInteraction} interaction={interaction} setHomeView={setHomeView} />} />
         </Routes>
       </div>
