@@ -23,14 +23,6 @@ function App() {
   const getTweets = async () => {
     let empty = [];
     const querySnapshot = await getDocs(collection(db, 'tweets'));
-
-    const updateTweets = async(tweet) => {
-      const user = await getDoc(doc(db, 'users', tweet.data().author))
-      await updateDoc(doc(db, 'tweets', tweet.data().id), {
-        profilePic: user.data().profilePic,
-      })
-    }
-
     querySnapshot.forEach((doc) => {
       updateTweets(doc);
       empty.push(doc.data());
@@ -41,9 +33,15 @@ function App() {
     setInteraction(false);
   }
 
+  const updateTweets = async(tweet) => {
+    const user = await getDoc(doc(db, 'users', tweet.data().author))
+    await updateDoc(doc(db, 'tweets', tweet.data().id), {
+      profilePic: user.data().profilePic,
+    })
+  }
+
   useEffect(() => {
     getTweets();
-    // checkInteractionStatus();
   }, [])
 
   useEffect(() => {
@@ -56,7 +54,6 @@ function App() {
       } else if (homeView === 'following') {
         getFollowingView();
       } else if (currentProfile !== '' && userUpdate === true) {
-        getTweets();
         getUserInteractions(currentProfile.id)
       } else {
         getTweets();
@@ -66,7 +63,6 @@ function App() {
 
   useEffect(() => {
     checkInteractionStatus()
-    console.log('tweets running')
   }, [tweets])
 
   const signIn = async () => {
@@ -141,6 +137,8 @@ function App() {
     const user = doc(db, 'users', author)
     const tweets = await getDocs(collection(db, 'tweets'))
     tweets.forEach((tweet) => {
+      updateTweets(tweet)
+      console.log(tweet.data());
       if (tweet.data().likes.includes(author)) {
         updateDoc(user, {
           likes: arrayUnion(tweet.data())
