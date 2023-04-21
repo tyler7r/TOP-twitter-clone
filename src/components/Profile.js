@@ -153,7 +153,6 @@ const EditProfile = (props) => {
                     updateDoc(user, {
                         profilePic: url,
                     })
-                    console.log(url);
                 })
             })
             setProfileImg(null)
@@ -196,7 +195,6 @@ const EditProfile = (props) => {
     const submitEdit = async (e) => {
         e.preventDefault();
         await uploadImage();
-        console.log('done')
         setUserUpdate(true);
         setInteraction(true);
         setEditMode(false);
@@ -231,7 +229,7 @@ const EditProfile = (props) => {
             </div>
             <div id='bio-edit'>
                 <label htmlFor='bio'>Bio: </label>
-                <input type='text' name='bio' id='bio' placeholder='About you...' value={profileBio} maxLength={160} onChange={(e) => {setProfileBio(e.target.value); console.log(profileBio)}} />
+                <input type='text' name='bio' id='bio' placeholder='About you...' value={profileBio} maxLength={160} onChange={(e) => {setProfileBio(e.target.value)}} />
             </div>
             <div id='submit-profile-edit' type='submit' onClick={(e) => submitEdit(e)}>Done</div>
         </div>

@@ -7,7 +7,7 @@ export const Nav = (props) => {
     if (isUserSignedIn === true) {
         return (
             <div id='main-nav'>
-                <Link to={'/profile/' + currentUser.id}><img onClick={() => {console.log(currentUser); setInteraction(true); setProfileView('tweets'); setSearch(''); setSearchMode(false)}} id='profile-icon' src={currentUser.profilePic} alt='profilePic' /></Link>
+                <Link to={'/profile/' + currentUser.id}><img onClick={() => {setInteraction(true); setProfileView('tweets'); setSearch(''); setSearchMode(false)}} id='profile-icon' src={currentUser.profilePic} alt='profilePic' /></Link>
                 <div id='profile-name'>{username()}</div>
                 <div id='log-out-button' onClick={() => logOut()}>Log Out</div>
             </div>

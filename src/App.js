@@ -138,7 +138,6 @@ function App() {
     const tweets = await getDocs(collection(db, 'tweets'))
     tweets.forEach((tweet) => {
       updateTweets(tweet)
-      console.log(tweet.data());
       if (tweet.data().likes.includes(author)) {
         updateDoc(user, {
           likes: arrayUnion(tweet.data())
@@ -175,7 +174,7 @@ function App() {
       let getTweet = await getDoc(doc(db, 'tweets', tweets[i].id))
       const like = document.querySelector(`#id${tweets[i].id}.like-btn`)
       const retweet = document.querySelector(`#id${tweets[i].id}.retweet-btn`)
-      if (like === null && retweet === null) console.log('null');
+      if (like === null && retweet === null) return;
       else if (currentUser !== '' && getTweet.exists()) {
         if (getTweet.data().likes.includes(currentUser.id)) {
           like.classList.add('liked')
