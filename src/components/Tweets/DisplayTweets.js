@@ -10,7 +10,7 @@ import CommentIcon from '../../images/comment.svg';
 import '../../styles/tweet.css'
 
 export const DisplayTweets = (props) => {
-    const { currentProfile, tweets, setInteraction, currentUser, setCurrentProfile, setSearch, setSearchMode, setProfileView, checkSignIn, username, setTweets, uid } = props;
+    const { setDraftMode, currentProfile, tweets, setInteraction, currentUser, setCurrentProfile, setSearch, setSearchMode, setProfileView, checkSignIn, username, setTweets, uid } = props;
 
     const [commentMode, setCommentMode] = useState({open: false, id: ''});
     const [openTweet, setOpenTweet] = useState({open: false, id: ''});
@@ -139,10 +139,10 @@ export const DisplayTweets = (props) => {
                                 <Link className='profile-pic-link' to={'/profile/' + tweet.author}><img onClick={() => {setInteraction(true); setProfileView('tweets')}} className='tweet-profilePic' src={tweet.profilePic} alt='tweet-profilePic' /></Link>
                                 <div id={tweet.id} className="tweet-details">
                                     <Link to={'/profile/' + tweet.author} className='tweet-name'><div id={tweet.id} onClick={() => {setInteraction(true)}}>{tweet.name}</div></Link>
-                                    <div id={tweet.id} className='tweet-message' onClick={() => {getComments(tweet.id); checkCommentInteractionStatus(tweet.id)}}>{tweet.message}</div>
+                                    <div id={tweet.id} className='tweet-message' onClick={() => {getComments(tweet.id); checkCommentInteractionStatus(tweet.id); setDraftMode(false)}}>{tweet.message}</div>
                                     <div id={tweet.id} className="interaction-btns-container">
                                         <div className="interaction-btns">
-                                            <img src={CommentIcon} alt='comment-btn' onClick={() => {if(checkSignIn()) setCommentMode({open: (!commentMode.open), id: `${tweet.id}`})}} id={tweet.id} className='tweet-interaction-btn comment-btn' />
+                                            <img src={CommentIcon} alt='comment-btn' onClick={() => {if(checkSignIn()) setCommentMode({open: (!commentMode.open), id: `${tweet.id}`}); setDraftMode(false)}} id={tweet.id} className='tweet-interaction-btn comment-btn' />
                                             <div className='comments'>{tweet.comments}</div>
                                         </div>
                                         <div className="interaction-btns">
@@ -170,10 +170,10 @@ export const DisplayTweets = (props) => {
                             <Link className='profile-pic-link' to={'/profile/' + tweet.author}><img onClick={() => {setInteraction(true); setProfileView('tweets')}} className='tweet-profilePic' src={tweet.profilePic} alt='tweet-profilePic' /></Link>
                             <div id={tweet.id} className="tweet-details">
                             <Link to={'/profile/' + tweet.author} className='tweet-name'><div id={tweet.id} onClick={() => {setInteraction(true)}}>{tweet.name}</div></Link>
-                                <div id={tweet.id} className='tweet-message' onClick={() => {getComments(tweet.id); checkCommentInteractionStatus(tweet.id)}}>{tweet.message}</div>
+                                <div id={tweet.id} className='tweet-message' onClick={() => {getComments(tweet.id); checkCommentInteractionStatus(tweet.id); setDraftMode(false)}}>{tweet.message}</div>
                                 <div id={tweet.id} className="interaction-btns-container">
                                     <div className="interaction-btns">
-                                        <img src={CommentIcon} alt='comment-btn' onClick={() => {if(checkSignIn()) setCommentMode({open: (!commentMode.open), id: `${tweet.id}`})}} id={`${tweet.id}`} className='tweet-interaction-btn' />
+                                        <img src={CommentIcon} alt='comment-btn' onClick={() => {if(checkSignIn()) setCommentMode({open: (!commentMode.open), id: `${tweet.id}`}); setDraftMode(false)}} id={`${tweet.id}`} className='tweet-interaction-btn' />
                                         <div className='comments'>{tweet.comments}</div>
                                     </div>
                                     <div className="interaction-btns">

@@ -39,9 +39,9 @@ export const DisplayComments = (props) => {
         retrieveComments(tweetId);
     }
 
-    if (openTweet.open === true && openTweet.id === tweetId) {
+    if (openTweet.open === true && openTweet.id === tweetId && comments.length > 0) {
         return (
-            <div className='comment-section'>
+            <div className='comment-section'> <div id='comment-section-title'>COMMENTS</div>
                 {comments.map(comment => {
                     if (comment.author === currentUser.id) {
                         return (
@@ -51,9 +51,11 @@ export const DisplayComments = (props) => {
                                     <div id={comment.id} className='comment-name'>{comment.name}</div>
                                     <div className='comment-message'>{comment.message}</div>
                                     <div className='comment-interaction-container'>
-                                        <img id={`cmt${comment.id}`} onClick={(e) => {if(checkSignIn()) {like(e)}}} className={`comment-interaction-btn comment-like`} src={Heart} alt='like-icon' />
-                                        <div className='comment-likes'>{comment.likes.length}</div>
-                                        <div id={comment.id} onClick={(e) => {if(checkSignIn()) deleteComment(e)}} className='comment-delete'>Delete</div>
+                                        <div className="comment-like-container">
+                                            <img id={`cmt${comment.id}`} onClick={(e) => {if(checkSignIn()) {like(e)}}} className={`comment-interaction-btn comment-like`} src={Heart} alt='like-icon' />
+                                            <div className='comment-likes'>{comment.likes.length}</div>
+                                        </div>
+                                        <div id={comment.id} onClick={(e) => {if(checkSignIn()) deleteComment(e)}} className='comment-delete'>DELETE</div>
                                     </div>
                                 </div>
                             </div>
@@ -66,14 +68,23 @@ export const DisplayComments = (props) => {
                                     <div id={comment.id} className='comment-name'>{comment.name}</div>
                                     <div className='comment-message'>{comment.message}</div>
                                     <div className='comment-interaction-container'>
-                                        <img id={`cmt${comment.id}`} onClick={(e) => {if(checkSignIn()) {like(e)}}} className={`comment-interaction-btn comment-like`} src={Heart} alt='like-icon' />
-                                        <div className='comment-likes'>{comment.likes.length}</div>
+                                        <div className="comment-like-container">
+                                            <img id={`cmt${comment.id}`} onClick={(e) => {if(checkSignIn()) {like(e)}}} className={`comment-interaction-btn comment-like`} src={Heart} alt='like-icon' />
+                                            <div className='comment-likes'>{comment.likes.length}</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         )
                     }
                 })}
+            </div>
+        )
+    } else if (openTweet.open === true && openTweet.id === tweetId && comments.length === 0) {
+        return (
+            <div id='comment-section'>
+                <div id='comment-section-title'>COMMENTS</div>
+                <div id='empty-comments-msg'>No Comments</div>
             </div>
         )
     }

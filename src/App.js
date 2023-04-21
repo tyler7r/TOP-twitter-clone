@@ -47,14 +47,12 @@ function App() {
   useEffect(() => {
     if (interaction === false) return; 
     else {
-      if (currentProfile !== '' && userUpdate === false) {
+      if (currentProfile !== '') {
         getUserInteractions(currentProfile.id);
       } else if (searchMode === true) {
         getSearchResults(search)
       } else if (homeView === 'following') {
         getFollowingView();
-      } else if (currentProfile !== '' && userUpdate === true) {
-        getUserInteractions(currentProfile.id)
       } else {
         getTweets();
       }
