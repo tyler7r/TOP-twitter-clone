@@ -67,6 +67,13 @@ export const DisplayTweets = (props) => {
         setInteraction(true);
     }
 
+    const updateComments = async (comment, id) => {
+        const getUser = await getDoc(doc(db, 'users', comment.data().author))
+        await updateDoc(doc(db, 'tweets', id, 'comments', comment.data().id), {
+            profilePic: getUser.data().profilePic,
+        })
+    }
+
     const getComments = async (id) => {
         if (commentMode.open === true) {
             setCommentMode({open: false, id: ''})
@@ -75,11 +82,11 @@ export const DisplayTweets = (props) => {
             let copy = []
             const querySnapshot = await getDocs(collection(db, 'tweets', id, 'comments'));
             querySnapshot.forEach((doc) => {
+                updateComments(doc, id)
                 copy.push(doc.data())
             })
             setOpenTweet({open: true, id: `${id}`})
-            if (copy.length === comments.length) return
-            else setComments(copy);
+            setComments(copy);
         } else {
             setOpenTweet({open: false, id: ``});
         }
@@ -89,6 +96,7 @@ export const DisplayTweets = (props) => {
         let copy = [];
         const querySnapshot = await getDocs(collection(db, 'tweets', id, 'comments'));
         querySnapshot.forEach((doc) => {
+            updateComments(doc, id)
             copy.push(doc.data())
         })
         setComments(copy);

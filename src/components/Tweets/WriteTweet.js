@@ -16,7 +16,7 @@ export const WriteTweet = (props) => {
                 name: username(),
                 message: message,
                 time: serverTimestamp(),
-                profilePic: profilePic(),
+                profilePic: currentUser.profilePic,
                 likes: [],
                 retweets: [],
                 comments: 0,

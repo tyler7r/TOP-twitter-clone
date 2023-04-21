@@ -42,16 +42,13 @@ function App() {
   }
 
   useEffect(() => {
-    updateCurrentUser();
     getTweets();
-    checkInteractionStatus();
+    // checkInteractionStatus();
   }, [])
 
   useEffect(() => {
     if (interaction === false) return; 
     else {
-      updateCurrentUser();
-      checkInteractionStatus();
       if (currentProfile !== '' && userUpdate === false) {
         getUserInteractions(currentProfile.id);
       } else if (searchMode === true) {
@@ -66,6 +63,11 @@ function App() {
       }
     }
   }, [interaction, currentProfile, searchMode, homeView, userUpdate]);
+
+  useEffect(() => {
+    checkInteractionStatus()
+    console.log('tweets running')
+  }, [tweets])
 
   const signIn = async () => {
     const provider = new GoogleAuthProvider();
@@ -134,18 +136,9 @@ function App() {
     }
   }
 
-  const updateCurrentUser = async () => {
-    if (currentUser !== '') {
-      const user = await getDoc(doc(db, 'users', currentUser.id))
-      setCurrentUser(user.data());
-      setUserUpdate(false);
-    }
-  }
-
   const getUserInteractions = async (author) => {
     let empty = [];
     const user = doc(db, 'users', author)
-    const getUser = await getDoc(user);
     const tweets = await getDocs(collection(db, 'tweets'))
     tweets.forEach((tweet) => {
       if (tweet.data().likes.includes(author)) {
@@ -180,13 +173,12 @@ function App() {
   }
 
   const checkInteractionStatus = async () => {
-    if (tweets.length === 0) return
     for (let i = 0; i < tweets.length; i++) {
       let getTweet = await getDoc(doc(db, 'tweets', tweets[i].id))
       const like = document.querySelector(`#id${tweets[i].id}.like-btn`)
       const retweet = document.querySelector(`#id${tweets[i].id}.retweet-btn`)
-      if (like === null) continue;
-      if (currentUser !== '' && getTweet.exists()) {
+      if (like === null && retweet === null) console.log('null');
+      else if (currentUser !== '' && getTweet.exists()) {
         if (getTweet.data().likes.includes(currentUser.id)) {
           like.classList.add('liked')
         } else {
@@ -234,7 +226,7 @@ function App() {
       <div className="App">
         <Routes>
           <Route path='/' element={<Home setSearchMode={setSearchMode} searchMode={searchMode} search={search} setSearch={setSearch} setProfileView={setProfileView} currentProfile={currentProfile} setCurrentProfile={setCurrentProfile} currentUser={currentUser} checkSignIn={checkSignIn} signIn={signIn} isUserSignedIn={signedIn} logOut={logOutUser} profilePic={getProfilePic} username={getUserName} uid={getUID} tweets={tweets} setTweets={setTweets} setInteraction={setInteraction} setHomeView={setHomeView} />} />
-          <Route path='/profile/:id' element={<Profile userUpdate={userUpdate} setUserUpdate={setUserUpdate} setSearchMode={setSearchMode} search={search} setSearch={setSearch} profileView={profileView} setProfileView={setProfileView} currentProfile={currentProfile} setCurrentProfile={setCurrentProfile} currentUser={currentUser} checkSignIn={checkSignIn} signIn={signIn} isUserSignedIn={signedIn} logOut={logOutUser} profilePic={getProfilePic} username={getUserName} uid={getUID} tweets={tweets} setTweets={setTweets} setInteraction={setInteraction} interaction={interaction} setHomeView={setHomeView} />} />
+          <Route path='/profile/:id' element={<Profile setCurrentUser={setCurrentUser} userUpdate={userUpdate} setUserUpdate={setUserUpdate} setSearchMode={setSearchMode} search={search} setSearch={setSearch} profileView={profileView} setProfileView={setProfileView} currentProfile={currentProfile} setCurrentProfile={setCurrentProfile} currentUser={currentUser} checkSignIn={checkSignIn} signIn={signIn} isUserSignedIn={signedIn} logOut={logOutUser} profilePic={getProfilePic} username={getUserName} uid={getUID} tweets={tweets} setTweets={setTweets} setInteraction={setInteraction} interaction={interaction} setHomeView={setHomeView} />} />
         </Routes>
       </div>
     </HashRouter>
