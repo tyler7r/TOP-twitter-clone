@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { HashRouter, Routes, Route } from 'react-router-dom'
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
-import { collection, getDocs, setDoc, doc, getDoc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { collection, getDocs, setDoc, doc, getDoc, updateDoc, arrayUnion, serverTimestamp } from 'firebase/firestore';
 import { db } from './firebase';
 import Logo from './images/iconmonstr-twitter-1.svg'
 import { Home } from './components/Home';
@@ -112,6 +112,7 @@ function App() {
         profilePic: getProfilePic(),
         bioPic: '',
         bio: '',
+        dateJoined: serverTimestamp(),
       })
       setCurrentUser({
         name: getUserName(),
@@ -124,6 +125,7 @@ function App() {
         profilePic: getProfilePic(),
         bioPic: '',
         bio: '',
+        dateJoined: serverTimestamp(),
       })
     } else {
       setCurrentUser(docSnap.data());
@@ -138,7 +140,7 @@ function App() {
       updateTweets(tweet)
       if (tweet.data().likes.includes(author)) {
         updateDoc(user, {
-          likes: arrayUnion(tweet.data())
+          likes: arrayUnion(tweet.data().id)
         })
         if (profileView === 'likes') {
           empty.push(tweet.data());
@@ -146,7 +148,7 @@ function App() {
       }
       if (tweet.data().retweets.includes(author)) {
         updateDoc(user, {
-          retweets: arrayUnion(tweet.data())
+          retweets: arrayUnion(tweet.data().id)
         })
         if (profileView === 'retweets') {
           empty.push(tweet.data())

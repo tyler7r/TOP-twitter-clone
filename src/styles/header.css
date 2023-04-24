@@ -16,7 +16,7 @@
 #main-title {
     font-weight: bold;
     font-size: 48px;
-    color: #1da1f1;
+    color: #f5983b;
 }
 
 #main-nav {
@@ -27,7 +27,7 @@
     align-items: center;
     column-gap: 8px;
     font-weight: bold;
-    color: #1da1f1;
+    color: #f5983b;
     cursor: default;
 }
 

@@ -22,7 +22,7 @@ export const Profile = (props) => {
 
     const getProfile = async () => {
         const getUser = await getDoc(doc(db, 'users', id))
-        setCurrentProfile(getUser.data());
+        setCurrentProfile({...getUser.data(), dateJoined: getUser.data().dateJoined.toDate().toLocaleDateString('en-US')});
     }
 
     const getProfileInfo = async () => {
@@ -41,6 +41,7 @@ export const Profile = (props) => {
     useEffect(() => {
         getProfile();
         getProfileInfo();
+        checkFollow();
     }, [])
 
     useEffect(() => {
@@ -48,6 +49,7 @@ export const Profile = (props) => {
             setHomeView('all');
             setSearchMode(false);
             setSearch('');
+            checkFollow();
             getProfile();
             getProfileInfo();
         }
@@ -76,15 +78,33 @@ export const Profile = (props) => {
                     followers: arrayUnion({id: currentUser.id, name: username()})
                 })
             }
+            checkFollow();
             setInteraction(true);
+        }
+    }
+
+    const checkFollow = async () => {
+        if (currentProfile.id === currentUser.id) return;
+        const getUser = await getDoc(doc(db, 'users', currentUser.id));
+        const following = getUser.data().following;
+        const followBtn = document.querySelector('#follow-btn');
+
+        if (following.some(e => e.id === currentProfile.id)) {
+            followBtn.classList.add('followed')
+            followBtn.textContent = 'FOLLOWING'
+        } else {
+            followBtn.classList.remove('followed');
+            followBtn.textContent = 'FOLLOW'
         }
     }
 
     return (
         <div id='profile'>
-            <Header setProfileView={setProfileView} currentUser={currentUser} setSearch={setSearch} setSearchMode={setSearchMode} setCurrentProfile={setCurrentProfile} setInteraction={setInteraction} signIn={signIn} logOut={logOut} isUserSignedIn={isUserSignedIn} profilePic={profilePic} username={username} />
-            <ProfileInfo setCurrentUser={setCurrentUser} profileImg={profileImg} setProfileImg={setProfileImg} bioPic={bioPic} setBioPic={setBioPic} profileBio={profileBio} setProfileBio={setProfileBio} currentProfile={currentProfile} setCurrentProfile={setCurrentProfile} currentUser={currentUser} follow={follow} followCount={followCount} editMode={editMode} setEditMode={setEditMode} setInteraction={setInteraction} profilePic={profilePic} setUserUpdate={setUserUpdate} />
-            <ProfileNav profileView={profileView} setProfileView={setProfileView} setInteraction={setInteraction} />
+            <div className="profile-page-header">
+                <Header setProfileView={setProfileView} currentUser={currentUser} setSearch={setSearch} setSearchMode={setSearchMode} setCurrentProfile={setCurrentProfile} setInteraction={setInteraction} signIn={signIn} logOut={logOut} isUserSignedIn={isUserSignedIn} profilePic={profilePic} username={username} />
+                <ProfileInfo setCurrentUser={setCurrentUser} profileImg={profileImg} setProfileImg={setProfileImg} bioPic={bioPic} setBioPic={setBioPic} profileBio={profileBio} setProfileBio={setProfileBio} currentProfile={currentProfile} setCurrentProfile={setCurrentProfile} currentUser={currentUser} follow={follow} followCount={followCount} editMode={editMode} setEditMode={setEditMode} setInteraction={setInteraction} profilePic={profilePic} setUserUpdate={setUserUpdate} />
+                <ProfileNav profileView={profileView} setProfileView={setProfileView} setInteraction={setInteraction} />
+            </div>
             <DisplayTweets setSearchMode={setSearchMode} setSearch={setSearch} draftMode={draftMode} setDraftMode={setDraftMode} currentProfile={currentProfile} setCurrentProfile={setCurrentProfile} uid={uid} checkSignIn={checkSignIn} username={username} profilePic={profilePic} tweets={tweets} setTweets={setTweets} setInteraction={setInteraction} currentUser={currentUser} setProfileView={setProfileView} />
         </div>
     )
@@ -97,25 +117,23 @@ const ProfileInfo = (props) => {
         backgroundImage: `url(${currentProfile.bioPic})`
     }
 
-    if (editMode === false && currentProfile.id === currentUser.id) {
+    if (editMode === false) {
         return (
             <div id='current-profile'>
-                <div id='edit-profile-btn' onClick={() => setEditMode(true)}>Edit Profile</div>
                 <div style={backgroundImage} id='current-profile-info'>
                     <img id='current-profile-pic' src={currentProfile.profilePic} alt='current-profile-pic' />
-                    <div id='current-profile-name'>{currentProfile.name}</div>
-                    <div id='profile-bio'>{profileBio}</div>
                 </div>
-                <FollowersSection follow={follow} followCount={followCount} currentProfile={currentProfile} currentUser={currentUser} />
-            </div>
-        )
-    } else if (editMode === false && currentProfile.id !== currentUser.id) {
-        return (
-            <div id='current-profile'>
-                <div style={backgroundImage} id='current-profile-info'>
-                    <img id='current-profile-pic' src={currentProfile.profilePic} alt='current-profile-pic' />
-                    <div id='current-profile-name'>{currentProfile.name}</div>
-                    <div id='profile-bio'>{profileBio}</div>
+                {currentProfile.id === currentUser.id && (
+                    <div id='edit-profile-btn' onClick={() => setEditMode(true)}>Edit Profile</div>
+                )}
+                {currentProfile.id !== currentUser.id && (
+                    <div id='follow-btn' onClick={() => follow()}>FOLLOW</div>
+                )}
+                <div id='current-profile-name'>{currentProfile.name}</div>
+                <div id='profile-bio'>{profileBio}</div>
+                <div id='date-section'>
+                    <div id='date-title'>Joined</div>
+                    <div id='date-joined'>{currentProfile.dateJoined}</div>
                 </div>
                 <FollowersSection follow={follow} followCount={followCount} currentProfile={currentProfile} currentUser={currentUser} />
             </div>
@@ -123,10 +141,12 @@ const ProfileInfo = (props) => {
     } else if (editMode === true) {
         return (
             <div id='current-profile'>
+                {currentProfile.id !== currentUser.id && (
+                    <div id='follow-btn' onClick={() => follow()}>FOLLOW</div>
+                )}
                 <div id='current-profile-info'>
                     <div id='current-profile-name'>{currentProfile.name}</div>
                 </div>
-                <FollowersSection follow={follow} followCount={followCount} currentProfile={currentProfile} currentUser={currentUser} />
                 <EditProfile setCurrentUser={setCurrentUser} currentUser={currentUser} setCurrentProfile={setCurrentProfile} setUserUpdate={setUserUpdate} profilePic={profilePic} bioPic={bioPic} setBioPic={setBioPic} profileImg={profileImg} setProfileImg={setProfileImg} profileBio={profileBio} setProfileBio={setProfileBio} setEditMode={setEditMode} setInteraction={setInteraction} currentProfile={currentProfile} />
             </div>
         )
@@ -218,14 +238,18 @@ const EditProfile = (props) => {
     return (
         <div id='profile-edit'>
             <div id='edit-profile-pic'>
-                <label htmlFor='profile-pic'>Profile Pic: </label>
-                <input type='file' id='profile-pic' name='profile-pic' onChange={(e) => setProfileImg(e.target.files[0])} />
-                <div id='remove-profile-pic' onClick={() => removeImage('profile')}>REMOVE CURRENT IMG</div>
+                <div className="edit-img-container">
+                    <label id='profile-pic-title' htmlFor='profile-pic'>Profile Avatar: </label>
+                    <input type='file' id='profile-pic' name='profile-pic' onChange={(e) => setProfileImg(e.target.files[0])} />
+                </div>
+                <div className='remove-pic' onClick={() => removeImage('profile')}>Remove Current Avatar</div>
             </div>
             <div id='edit-background-img'>
-                <label htmlFor='background-img'>Profile Background: </label>
-                <input type='file' id='background-img' name='background-img' onChange={(e) => setBioPic(e.target.files[0])} />
-                <div id='remove-background-img' onClick={() => removeImage('background')}>REMOVE CURRENT IMG</div>
+                <div className="edit-img-container">
+                    <label id='background-img-title' htmlFor='background-img'>Profile Background: </label>
+                    <input type='file' id='background-img' name='background-img' onChange={(e) => setBioPic(e.target.files[0])} />
+                </div>
+                <div className='remove-pic' onClick={() => removeImage('background')}>Remove Current Background</div>
             </div>
             <div id='bio-edit'>
                 <label htmlFor='bio'>Bio: </label>
@@ -239,36 +263,39 @@ const EditProfile = (props) => {
 const ProfileNav = (props) => {
     const { setProfileView, setInteraction } = props;
 
+    const clickedView = (view) => {
+        let viewBtns = document.querySelectorAll(`.profile-view-btn`)
+        viewBtns.forEach((btn) => {
+            if (btn.textContent === view) {
+                btn.classList.add('selected-profile-view')
+            } else {
+                btn.classList.remove('selected-profile-view')
+            }
+        })
+    }
+
     return (
         <div id='profile-nav'>
-            <div onClick={() => {setInteraction(true); setProfileView('tweets')}} id='tweets-view'>Tweets</div>
-            <div onClick={() => {setInteraction(true); setProfileView('likes')}} id='likes-view'>Likes</div>
-            <div onClick={() => {setInteraction(true); setProfileView('retweets')}} id='retweets-view'>Retweets</div>
+            <div onClick={() => {clickedView('Tweets'); setInteraction(true); setProfileView('tweets')}} className='selected-profile-view profile-view-btn' id='tweets-view'>Tweets</div>
+            <div onClick={() => {clickedView('Likes') ;setInteraction(true); setProfileView('likes')}} className='profile-view-btn' id='likes-view'>Likes</div>
+            <div onClick={() => {clickedView('Retweets') ;setInteraction(true); setProfileView('retweets')}} className='profile-view-btn' id='retweets-view'>Retweets</div>
         </div>
     )
 }
 
 const FollowersSection = (props) => {
     const { currentProfile, currentUser, follow, followCount } = props;
-
-    if (currentProfile.id === currentUser.id) {
-        return (
-            <div id="followers-section">
-                <div id='followers-info'>
-                    <div id='followers'>Followers: {followCount.followers}</div>
-                    <div id='following'>Following: {followCount.following}</div>
-                </div>
-            </div>
-        )
-    } else {
-        return (
+    
+    return (
         <div id='followers-section'>
-            <div id='follow-btn' onClick={() => follow()}>FOLLOW</div>
-            <div id='followers-info'>
-                <div id='followers'>Followers: {followCount.followers}</div>
-                <div id='following'>Following: {followCount.following}</div>
+            <div className='follow-section' id='followers'>
+                <div className='follow-count'>{followCount.followers}</div>
+                <div className='follow-section-title'>Followers</div>
+            </div>
+            <div className='follow-section' id='following'>
+                <div className='follow-count'>{followCount.following}</div>
+                <div className='follow-section-title'>Following</div>
             </div>
         </div>
-        )
-    }
+    )
 }

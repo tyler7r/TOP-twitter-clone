@@ -43,46 +43,34 @@ export const DisplayComments = (props) => {
         return (
             <div className='comment-section'> <div id='comment-section-title'>COMMENTS</div>
                 {comments.map(comment => {
-                    if (comment.author === currentUser.id) {
-                        return (
-                            <div key={Math.random()} className='comment'>
-                                <Link to={'/profile/' + comment.author}><img src={comment.profilePic} onClick={() => {setInteraction(true); setProfileView('tweets'); setSearch(''); setSearchMode(false)}} className='comment-profilePic' alt='comment-profilePic' /></Link>
-                                <div className="comment-details">
-                                    <div id={comment.id} className='comment-name'>{comment.name}</div>
-                                    <div className='comment-message'>{comment.message}</div>
-                                    <div className='comment-interaction-container'>
-                                        <div className="comment-like-container">
-                                            <img id={`cmt${comment.id}`} onClick={(e) => {if(checkSignIn()) {like(e)}}} className={`comment-interaction-btn comment-like`} src={Heart} alt='like-icon' />
-                                            <div className='comment-likes'>{comment.likes.length}</div>
-                                        </div>
+                    return (
+                        <div key={Math.random()} className='comment'>
+                            <Link to={'/profile/' + comment.author}><img src={comment.profilePic} onClick={() => {setInteraction(true); setProfileView('tweets'); setSearch(''); setSearchMode(false)}} className='comment-profilePic' alt='comment-profilePic' /></Link>
+                            <div className="comment-details">
+                                <div id={comment.id} className='comment-name'>{comment.name}</div>
+                                <div className='comment-message'>{comment.message}</div>
+                                <div className='comment-interaction-container'>
+                                    <div className="comment-like-container">
+                                        <img id={`cmt${comment.id}`} onClick={(e) => {if(checkSignIn()) {like(e)}}} className={`comment-interaction-btn comment-like`} src={Heart} alt='like-icon' />
+                                        <div className='comment-likes'>{comment.likes.length}</div>
+                                    </div>
+                                    {comment.author === currentUser.id && (
                                         <div id={comment.id} onClick={(e) => {if(checkSignIn()) deleteComment(e)}} className='comment-delete'>DELETE</div>
-                                    </div>
+                                    )}
+                                </div>
+                                <div id={comment.id} className='tweet-time'>
+                                    <div className="tweet-date">{comment.time.toDate().toLocaleDateString('en-US')}</div>
+                                    <div className="tweet-time-details">{comment.time.toDate().toLocaleTimeString(navigator.language, {hour: '2-digit', minute: '2-digit'})}</div>
                                 </div>
                             </div>
-                        )
-                    } else {
-                        return (
-                            <div key={Math.random()} className='comment'>
-                                <Link to={'/profile/' + comment.author}><img src={comment.profilePic} onClick={() => {setInteraction(true); setProfileView('tweets'); setSearch(''); setSearchMode(false)}} className='comment-profilePic' alt='comment-profilePic' /></Link>
-                                <div className="comment-details">
-                                    <div id={comment.id} className='comment-name'>{comment.name}</div>
-                                    <div className='comment-message'>{comment.message}</div>
-                                    <div className='comment-interaction-container'>
-                                        <div className="comment-like-container">
-                                            <img id={`cmt${comment.id}`} onClick={(e) => {if(checkSignIn()) {like(e)}}} className={`comment-interaction-btn comment-like`} src={Heart} alt='like-icon' />
-                                            <div className='comment-likes'>{comment.likes.length}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        )
-                    }
+                        </div>
+                    )
                 })}
             </div>
         )
     } else if (openTweet.open === true && openTweet.id === tweetId && comments.length === 0) {
         return (
-            <div id='comment-section'>
+            <div className='comment-section'>
                 <div id='comment-section-title'>COMMENTS</div>
                 <div id='empty-comments-msg'>No Comments</div>
             </div>

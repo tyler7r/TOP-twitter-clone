@@ -127,53 +127,26 @@ export const DisplayTweets = (props) => {
         }
     }
 
+    const toggleTweetHover = (e) => {
+        const tweet = document.querySelector(`.tweet#${e.target.id}`);
+        tweet.classList.toggle('hovered');
+    }
+
     if (tweets.length === 0) {
         return <div id='no-tweets-msg'>No Tweets</div>
     } else {
         return (
             <div id='feed'>
                 {tweets.map(tweet => {
-                    if (tweet.author === currentUser.id) {
-                        return (
-                            <div key={tweet.id} className='tweet'>
-                                <Link className='profile-pic-link' to={'/profile/' + tweet.author}><img onClick={() => {setInteraction(true); setProfileView('tweets')}} className='tweet-profilePic' src={tweet.profilePic} alt='tweet-profilePic' /></Link>
-                                <div id={tweet.id} className="tweet-details">
-                                    <Link to={'/profile/' + tweet.author} className='tweet-name'><div id={tweet.id} onClick={() => {setInteraction(true)}}>{tweet.name}</div></Link>
-                                    <div id={tweet.id} className='tweet-message' onClick={() => {getComments(tweet.id); checkCommentInteractionStatus(tweet.id); setDraftMode(false)}}>{tweet.message}</div>
-                                    <div id={tweet.id} className="interaction-btns-container">
-                                        <div className="interaction-btns">
-                                            <img src={CommentIcon} alt='comment-btn' onClick={() => {if(checkSignIn()) setCommentMode({open: (!commentMode.open), id: `${tweet.id}`}); setDraftMode(false)}} id={tweet.id} className='tweet-interaction-btn comment-btn' />
-                                            <div className='comments'>{tweet.comments}</div>
-                                        </div>
-                                        <div className="interaction-btns">
-                                            <img src={Retweet} alt='retweet-btn' onClick={(e) => retweet(e)} id={`id${tweet.id}`} className='tweet-interaction-btn retweet-btn' />
-                                            <div className='retweets'>{tweet.retweets.length}</div>
-                                        </div>
-                                        <div className="interaction-btns">
-                                            <img className='tweet-interaction-btn like-btn' src={Heart} alt='like-btn' onClick={(e) => like(e)} id={`id${tweet.id}`}/>
-                                            <div className='likes'>{tweet.likes.length}</div>
-                                        </div>
-                                        <div id={tweet.id} onClick={(e) => deleteTweet(e)} className='interaction-btns tweet-delete'>DELETE</div>
-                                    </div>
-                                    <div id={tweet.id} className='tweet-time'>
-                                        <div className="tweet-date">{tweet.time.toDate().toLocaleDateString('en-US')}</div>
-                                        <div className="tweet-time-details">{tweet.time.toDate().toLocaleTimeString(navigator.language, {hour: '2-digit', minute: '2-digit'})}</div>
-                                    </div>
-                                </div>
-                                <Comment retrieveComments={retrieveComments} setNewComment={setNewComment} comment={comment} username={username} commentMode={commentMode} setCommentMode={setCommentMode} tweetId={tweet.id} tweets={tweets} setTweets={setTweets} setInteraction={setInteraction} uid={uid} currentUser={currentUser} />
-                                <DisplayComments checkLike={checkCommentInteractionStatus} currentUser={currentUser} retrieveComments={retrieveComments} checkSignIn={checkSignIn} comments={comments} openTweet={openTweet} tweetId={tweet.id} uid={uid} comment={comment} setInteraction={setInteraction} setCurrentProfile={setCurrentProfile} setSearchMode={setSearchMode} setSearch={setSearch} setProfileView={setProfileView} />
-                            </div>
-                        )
-                    } else {
                     return (
-                        <div key={tweet.id} className='tweet'>
+                        <div key={tweet.id} className='tweet' id={`twt${tweet.id}`}>
                             <Link className='profile-pic-link' to={'/profile/' + tweet.author}><img onClick={() => {setInteraction(true); setProfileView('tweets')}} className='tweet-profilePic' src={tweet.profilePic} alt='tweet-profilePic' /></Link>
-                            <div id={tweet.id} className="tweet-details">
-                            <Link to={'/profile/' + tweet.author} className='tweet-name'><div id={tweet.id} onClick={() => {setInteraction(true)}}>{tweet.name}</div></Link>
-                                <div id={tweet.id} className='tweet-message' onClick={() => {getComments(tweet.id); checkCommentInteractionStatus(tweet.id); setDraftMode(false)}}>{tweet.message}</div>
-                                <div id={tweet.id} className="interaction-btns-container">
+                            <div className="tweet-details">
+                                <Link to={'/profile/' + tweet.author} className='tweet-name'><div id={tweet.id} onClick={() => {setInteraction(true)}}>{tweet.name}</div></Link>
+                                <div id={`twt${tweet.id}`} onMouseEnter={(e) => toggleTweetHover(e)} onMouseLeave={(e) => toggleTweetHover(e)} className='tweet-message' onClick={() => {getComments(tweet.id); checkCommentInteractionStatus(tweet.id); setDraftMode(false)}}>{tweet.message}</div>
+                                <div id={`twt${tweet.id}`} className="interaction-btns-container">
                                     <div className="interaction-btns">
-                                        <img src={CommentIcon} alt='comment-btn' onClick={() => {if(checkSignIn()) setCommentMode({open: (!commentMode.open), id: `${tweet.id}`}); setDraftMode(false)}} id={`${tweet.id}`} className='tweet-interaction-btn' />
+                                        <img src={CommentIcon} alt='comment-btn' onClick={() => {if(checkSignIn()) setCommentMode({open: (!commentMode.open), id: `${tweet.id}`}); setDraftMode(false)}} id={tweet.id} className='tweet-interaction-btn comment-btn' />
                                         <div className='comments'>{tweet.comments}</div>
                                     </div>
                                     <div className="interaction-btns">
@@ -184,6 +157,9 @@ export const DisplayTweets = (props) => {
                                         <img className='tweet-interaction-btn like-btn' src={Heart} alt='like-btn' onClick={(e) => like(e)} id={`id${tweet.id}`}/>
                                         <div className='likes'>{tweet.likes.length}</div>
                                     </div>
+                                    {tweet.author === currentUser.id && (
+                                        <div id={tweet.id} onClick={(e) => deleteTweet(e)} className='interaction-btns tweet-delete'>DELETE</div>
+                                    )}
                                 </div>
                                 <div id={tweet.id} className='tweet-time'>
                                     <div className="tweet-date">{tweet.time.toDate().toLocaleDateString('en-US')}</div>
@@ -194,7 +170,6 @@ export const DisplayTweets = (props) => {
                             <DisplayComments checkLike={checkCommentInteractionStatus} currentUser={currentUser} retrieveComments={retrieveComments} checkSignIn={checkSignIn} comments={comments} openTweet={openTweet} tweetId={tweet.id} uid={uid} comment={comment} setInteraction={setInteraction} setCurrentProfile={setCurrentProfile} setSearchMode={setSearchMode} setSearch={setSearch} setProfileView={setProfileView} />
                         </div>
                     )
-                    }
                 })}
             </div>
         )
